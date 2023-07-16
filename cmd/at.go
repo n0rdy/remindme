@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"n0rdy.me/remindme/common"
@@ -53,7 +52,6 @@ func parseAtCmd(cmd *cobra.Command) (*common.Event, error) {
 	}
 
 	return &common.Event{
-		ID:       uuid.New(),
 		Message:  message,
 		RemindAt: remindAt,
 	}, nil

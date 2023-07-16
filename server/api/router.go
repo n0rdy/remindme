@@ -3,22 +3,22 @@ package api
 import (
 	"encoding/json"
 	"github.com/go-chi/chi/v5"
-	"github.com/google/uuid"
 	"net/http"
 	"remindme/server/common"
 	"remindme/server/service"
+	"strconv"
 )
 
 type RemindMeRouter struct {
-	service    service.ReminderService
+	service    *service.ReminderService
 	shutdownCh chan struct{}
 }
 
-func NewRemindMeRouter(service service.ReminderService, shutdownCh chan struct{}) RemindMeRouter {
+func NewRemindMeRouter(service *service.ReminderService, shutdownCh chan struct{}) RemindMeRouter {
 	return RemindMeRouter{service: service, shutdownCh: shutdownCh}
 }
 
-func (rmr RemindMeRouter) NewRouter() *chi.Mux {
+func (rmr *RemindMeRouter) NewRouter() *chi.Mux {
 	router := chi.NewRouter()
 
 	router.Route("/api/v1", func(r chi.Router) {
@@ -36,12 +36,12 @@ func (rmr RemindMeRouter) NewRouter() *chi.Mux {
 	return router
 }
 
-func (rmr RemindMeRouter) getAllReminders(w http.ResponseWriter, req *http.Request) {
+func (rmr *RemindMeRouter) getAllReminders(w http.ResponseWriter, req *http.Request) {
 	reminders := rmr.service.GetAll()
 	rmr.sendJsonResponse(w, http.StatusOK, reminders)
 }
 
-func (rmr RemindMeRouter) createNewReminder(w http.ResponseWriter, req *http.Request) {
+func (rmr *RemindMeRouter) createNewReminder(w http.ResponseWriter, req *http.Request) {
 	var reminder common.Reminder
 	err := json.NewDecoder(req.Body).Decode(&reminder)
 	if err != nil {
@@ -53,25 +53,25 @@ func (rmr RemindMeRouter) createNewReminder(w http.ResponseWriter, req *http.Req
 	rmr.sendOkEmptyResponse(w)
 }
 
-func (rmr RemindMeRouter) deleteAllReminders(w http.ResponseWriter, req *http.Request) {
+func (rmr *RemindMeRouter) deleteAllReminders(w http.ResponseWriter, req *http.Request) {
 	rmr.service.CancelAll()
 	rmr.sendOkEmptyResponse(w)
 }
 
-func (rmr RemindMeRouter) deleteReminder(w http.ResponseWriter, req *http.Request) {
+func (rmr *RemindMeRouter) deleteReminder(w http.ResponseWriter, req *http.Request) {
 	id := chi.URLParam(req, "id")
 	if id == "" {
 		rmr.sendErrorResponse(w, http.StatusBadRequest, common.ErrCodeReminderIdWrongFormat)
 		return
 	}
 
-	idAsUuid, err := uuid.Parse(id)
+	idAsInt, err := strconv.Atoi(id)
 	if err != nil {
 		rmr.sendErrorResponse(w, http.StatusBadRequest, common.ErrCodeReminderIdWrongFormat)
 		return
 	}
 
-	canceled := rmr.service.Cancel(idAsUuid)
+	canceled := rmr.service.Cancel(idAsInt)
 	if !canceled {
 		rmr.sendErrorResponse(w, http.StatusNotFound, common.ErrCodeReminderNotFoundOrAlreadyStopped)
 		return
@@ -79,20 +79,20 @@ func (rmr RemindMeRouter) deleteReminder(w http.ResponseWriter, req *http.Reques
 	rmr.sendOkEmptyResponse(w)
 }
 
-func (rmr RemindMeRouter) shutdown(w http.ResponseWriter, req *http.Request) {
+func (rmr *RemindMeRouter) shutdown(w http.ResponseWriter, req *http.Request) {
 	rmr.shutdownCh <- struct{}{}
 	rmr.sendOkEmptyResponse(w)
 }
 
-func (rmr RemindMeRouter) healthCheck(w http.ResponseWriter, req *http.Request) {
+func (rmr *RemindMeRouter) healthCheck(w http.ResponseWriter, req *http.Request) {
 	rmr.sendJsonResponse(w, http.StatusOK, common.HealthcheckOk())
 }
 
-func (rmr RemindMeRouter) sendOkEmptyResponse(w http.ResponseWriter) {
+func (rmr *RemindMeRouter) sendOkEmptyResponse(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (rmr RemindMeRouter) sendJsonResponse(w http.ResponseWriter, httpCode int, payload interface{}) {
+func (rmr *RemindMeRouter) sendJsonResponse(w http.ResponseWriter, httpCode int, payload interface{}) {
 	respBody, err := json.Marshal(payload)
 	if err != nil {
 		rmr.sendErrorResponse(w, http.StatusInternalServerError, common.ErrCodeResponseMarshaling)
@@ -104,6 +104,6 @@ func (rmr RemindMeRouter) sendJsonResponse(w http.ResponseWriter, httpCode int, 
 	w.Write(respBody)
 }
 
-func (rmr RemindMeRouter) sendErrorResponse(w http.ResponseWriter, httpCode int, errCode string) {
+func (rmr *RemindMeRouter) sendErrorResponse(w http.ResponseWriter, httpCode int, errCode string) {
 	rmr.sendJsonResponse(w, httpCode, common.ErrorResponse{Code: errCode})
 }

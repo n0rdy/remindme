@@ -7,7 +7,7 @@ import (
 	"n0rdy.me/remindme/httpclient"
 )
 
-const eventTemplate = "ID: \"%s\", Message: \"%s\", RemindAt: \"%s\"\n"
+const eventTemplate = "ID: \"%d\", Message: \"%s\", RemindAt: \"%s\"\n"
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
@@ -37,5 +37,5 @@ func init() {
 }
 
 func printEvent(event common.Event) {
-	fmt.Printf(eventTemplate, event.ID.String(), event.Message, event.RemindAt.String())
+	fmt.Printf(eventTemplate, event.ID, event.Message, event.RemindAt.String())
 }

@@ -1,12 +1,11 @@
 package common
 
 import (
-	"github.com/google/uuid"
 	"time"
 )
 
 type Reminder struct {
-	ID       uuid.UUID `json:"id,omitempty"`
+	ID       int       `json:"id,omitempty"`
 	Message  string    `json:"message,omitempty"`
 	RemindAt time.Time `json:"remindAt,omitempty"`
 }

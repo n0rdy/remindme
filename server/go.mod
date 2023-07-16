@@ -5,7 +5,6 @@ go 1.20
 require (
 	github.com/gen2brain/beeep v0.0.0-20230602101333-f384c29b62dd
 	github.com/go-chi/chi/v5 v5.0.8
-	github.com/google/uuid v1.3.0
 )
 
 require (

@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"remindme/server/api"
-	"remindme/server/notification"
 	"remindme/server/repo"
 	"remindme/server/service"
 )
@@ -14,8 +13,8 @@ func main() {
 	port := "15555"
 
 	shutdownCh := make(chan struct{})
-	srv := service.NewReminderService(repo.NewImMemoryEventRepo(), notification.NewNotifier())
-	remindMeRouter := api.NewRemindMeRouter(srv, shutdownCh)
+	srv := service.NewReminderService(repo.NewImMemoryReminderRepo())
+	remindMeRouter := api.NewRemindMeRouter(&srv, shutdownCh)
 	httpRouter := remindMeRouter.NewRouter()
 
 	server := &http.Server{Addr: ":" + port, Handler: httpRouter}

@@ -1,12 +1,11 @@
 package common
 
 import (
-	"github.com/google/uuid"
 	"time"
 )
 
 type Event struct {
-	ID       uuid.UUID
+	ID       int
 	Message  string
 	RemindAt time.Time
 }

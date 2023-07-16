@@ -6,6 +6,7 @@ import (
 	"io"
 	"n0rdy.me/remindme/common"
 	"net/http"
+	"strconv"
 )
 
 const serverUrl = "http://localhost:15555"
@@ -68,8 +69,8 @@ func DeleteAllReminders() error {
 	return nil
 }
 
-func DeleteReminder(id string) error {
-	req, err := http.NewRequest(http.MethodDelete, serverUrl+"/api/v1/reminders/"+id, nil)
+func DeleteReminder(id int) error {
+	req, err := http.NewRequest(http.MethodDelete, serverUrl+"/api/v1/reminders/"+strconv.Itoa(id), nil)
 	if err != nil {
 		return common.ErrInternal
 	}
