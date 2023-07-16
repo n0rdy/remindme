@@ -12,6 +12,10 @@ func (repo *inMemoryReminderRepo) Add(reminder common.Reminder) {
 	repo.reminders[reminder.ID] = reminder
 }
 
+func (repo *inMemoryReminderRepo) Update(reminder common.Reminder) {
+	repo.reminders[reminder.ID] = reminder
+}
+
 func (repo *inMemoryReminderRepo) List() []common.Reminder {
 	remindersAsList := make([]common.Reminder, len(repo.reminders))
 	i := 0
@@ -22,6 +26,14 @@ func (repo *inMemoryReminderRepo) List() []common.Reminder {
 	}
 
 	return remindersAsList
+}
+
+func (repo *inMemoryReminderRepo) Get(id int) *common.Reminder {
+	if reminder, found := repo.reminders[id]; found {
+		return &reminder
+	} else {
+		return nil
+	}
 }
 
 func (repo *inMemoryReminderRepo) DeleteAll() {

@@ -21,20 +21,15 @@ func (rs *ReminderService) GetAll() []common.Reminder {
 	return rs.repo.List()
 }
 
+func (rs *ReminderService) Get(id int) *common.Reminder {
+	return rs.repo.Get(id)
+}
+
 func (rs *ReminderService) Set(reminder common.Reminder) {
 	reminder.ID = rs.idResolver.Next()
 
 	rs.repo.Add(reminder)
-
-	reminderTimer := time.AfterFunc(reminder.RemindAt.Sub(time.Now()), func() {
-		err := rs.notifier.Notify(reminder)
-		if err != nil {
-			fmt.Println("error happened on trying to send a notification for the reminder "+strconv.Itoa(reminder.ID), err)
-		}
-		rs.repo.Delete(reminder.ID)
-	})
-
-	rs.rmdIdToTimer[reminder.ID] = reminderTimer
+	rs.setTimer(reminder)
 }
 
 func (rs *ReminderService) CancelAll() {
@@ -53,10 +48,35 @@ func (rs *ReminderService) Cancel(reminderId int) bool {
 
 	rs.repo.Delete(reminderId)
 
+	var stopped = false
 	if timer, found := rs.rmdIdToTimer[reminderId]; found {
-		return timer.Stop()
+		stopped = timer.Stop()
 	}
-	return false
+	delete(rs.rmdIdToTimer, reminderId)
+
+	return stopped
+}
+
+func (rs *ReminderService) Change(reminderId int, reminder common.Reminder) {
+	reminder.ID = reminderId
+	rs.repo.Update(reminder)
+
+	if timer, found := rs.rmdIdToTimer[reminderId]; found {
+		timer.Stop()
+	}
+	rs.setTimer(reminder)
+}
+
+func (rs *ReminderService) setTimer(reminder common.Reminder) {
+	reminderTimer := time.AfterFunc(reminder.RemindAt.Sub(time.Now()), func() {
+		err := rs.notifier.Notify(reminder)
+		if err != nil {
+			fmt.Println("error happened on trying to send a notification for the reminder "+strconv.Itoa(reminder.ID), err)
+		}
+		rs.repo.Delete(reminder.ID)
+	})
+
+	rs.rmdIdToTimer[reminder.ID] = reminderTimer
 }
 
 func NewReminderService(repo repo.ReminderRepo) ReminderService {

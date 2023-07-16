@@ -46,12 +46,12 @@ func parseCancelCmd(cmd *cobra.Command) (*CancelFlags, error) {
 	isAll := flags.Lookup(common.AllFlag).Changed
 	id, err := flags.GetInt(common.IdFlag)
 	if err != nil {
-		return nil, common.ErrWrongFormattedStringFlag(common.IdFlag)
+		return nil, common.ErrWrongFormattedIntFlag(common.IdFlag)
 	}
 
 	// catches "no flags provided" and "all flags provided" cases
 	if (id == 0 && !isAll) || (id != 0 && isAll) {
-		return nil, common.ErrInvalidCancelFlagsProvided
+		return nil, common.ErrCancelCmdInvalidFlagsProvided
 	}
 
 	return &CancelFlags{

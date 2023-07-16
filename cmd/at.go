@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/pflag"
 	"n0rdy.me/remindme/common"
 	"n0rdy.me/remindme/httpclient"
+	"n0rdy.me/remindme/utils"
 	"time"
 )
 
@@ -31,7 +32,7 @@ List the upcoming reminders with the "list" command.`,
 func init() {
 	rootCmd.AddCommand(atCmd)
 
-	atCmd.Flags().StringP(common.AboutFlag, "a", "", "Reminder repo message")
+	atCmd.Flags().StringP(common.AboutFlag, "a", "", "Reminder message")
 	atCmd.Flags().StringP(common.TimeFlag, "t", "", "Time to remind at for `at` command in 24-hours HH:MM format: e.g. 16:30, 07:45, 00:00")
 }
 
@@ -43,7 +44,7 @@ func parseAtCmd(cmd *cobra.Command) (*common.Event, error) {
 		return nil, common.ErrWrongFormattedStringFlag(common.AboutFlag)
 	}
 	if message == "" {
-		return nil, common.ErrNoMessageProvided
+		return nil, common.ErrInAtCmdNoMessageProvided
 	}
 
 	remindAt, err := calcRemindAtForAtFlag(flags)
@@ -65,18 +66,8 @@ func calcRemindAtForAtFlag(flags *pflag.FlagSet) (time.Time, error) {
 		return now, common.ErrWrongFormattedStringFlag(common.TimeFlag)
 	}
 	if t == "" {
-		return now, common.ErrTimeNotProvided
+		return now, common.ErrAtCmdTimeNotProvided
 	}
 
-	parsedTime, err := time.Parse(common.TimeFormat24Hours, t+":00")
-	if err != nil {
-		return now, common.ErrWrongFormattedTime
-	}
-
-	parsedTime = time.Date(now.Year(), now.Month(), now.Day(), parsedTime.Hour(), parsedTime.Minute(), parsedTime.Second(), 0, time.Local)
-	if parsedTime.Before(now) || parsedTime.Equal(now) {
-		return now, common.ErrTimeShouldBeInFuture
-	}
-
-	return parsedTime, nil
+	return utils.ToNotificationTime(t)
 }

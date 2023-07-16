@@ -5,9 +5,11 @@ import (
 )
 
 type ReminderRepo interface {
-	Add(common.Reminder)
+	Add(reminder common.Reminder)
+	Update(reminder common.Reminder)
 	List() []common.Reminder
+	Get(id int) *common.Reminder
 	DeleteAll()
-	Delete(int)
-	Exists(int) bool
+	Delete(id int)
+	Exists(id int) bool
 }

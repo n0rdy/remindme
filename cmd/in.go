@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/pflag"
 	"n0rdy.me/remindme/common"
 	"n0rdy.me/remindme/httpclient"
+	"n0rdy.me/remindme/utils"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -34,9 +35,9 @@ func init() {
 	rootCmd.AddCommand(inCmd)
 
 	inCmd.Flags().StringP(common.AboutFlag, "a", "", "Reminder message")
-	inCmd.Flags().Int32(common.SecondsFlag, 0, "Seconds for `in` command")
-	inCmd.Flags().Int32(common.MinutesFlag, 0, "Minutes for `in` command")
-	inCmd.Flags().Int32(common.HoursFlag, 0, "Hours for `in` command")
+	inCmd.Flags().Int(common.SecondsFlag, 0, "Seconds for `in` command")
+	inCmd.Flags().Int(common.MinutesFlag, 0, "Minutes for `in` command")
+	inCmd.Flags().Int(common.HoursFlag, 0, "Hours for `in` command")
 }
 
 func parseInCmd(cmd *cobra.Command) (*common.Event, error) {
@@ -47,7 +48,7 @@ func parseInCmd(cmd *cobra.Command) (*common.Event, error) {
 		return nil, common.ErrWrongFormattedStringFlag(common.AboutFlag)
 	}
 	if message == "" {
-		return nil, common.ErrNoMessageProvided
+		return nil, common.ErrInAtCmdNoMessageProvided
 	}
 
 	remindAt, err := calcRemindAtForInFlag(flags)
@@ -64,29 +65,25 @@ func parseInCmd(cmd *cobra.Command) (*common.Event, error) {
 func calcRemindAtForInFlag(flags *pflag.FlagSet) (time.Time, error) {
 	now := time.Now()
 
-	seconds, err := flags.GetInt32(common.SecondsFlag)
+	seconds, err := flags.GetInt(common.SecondsFlag)
 	if err != nil {
 		return now, common.ErrWrongFormattedIntFlag(common.SecondsFlag)
 	}
-	minutes, err := flags.GetInt32(common.MinutesFlag)
+	minutes, err := flags.GetInt(common.MinutesFlag)
 	if err != nil {
 		return now, common.ErrWrongFormattedIntFlag(common.MinutesFlag)
 	}
-	hours, err := flags.GetInt32(common.HoursFlag)
+	hours, err := flags.GetInt(common.HoursFlag)
 	if err != nil {
 		return now, common.ErrWrongFormattedIntFlag(common.HoursFlag)
 	}
 
 	if seconds == 0 && minutes == 0 && hours == 0 {
-		return now, common.ErrDurationNotProvided
+		return now, common.ErrInCmdDurationNotProvided
 	}
 	if seconds < 0 || minutes < 0 || hours < 0 {
-		return now, common.ErrInvalidDuration
+		return now, common.ErrInCmdInvalidDuration
 	}
 
-	return now.Local().Add(
-		time.Second*time.Duration(seconds) +
-			time.Minute*time.Duration(minutes) +
-			time.Hour*time.Duration(hours),
-	), nil
+	return utils.AddDuration(now, seconds, minutes, hours), nil
 }
