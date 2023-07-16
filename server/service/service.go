@@ -33,6 +33,15 @@ func (rs ReminderService) Set(reminder common.Reminder) {
 	rs.rmdIdToTimer[reminder.ID.String()] = reminderTimer
 }
 
+func (rs ReminderService) CancelAll() {
+	rs.repo.DeleteAll()
+
+	for _, timer := range rs.rmdIdToTimer {
+		timer.Stop()
+	}
+	rs.rmdIdToTimer = make(map[string]*time.Timer, 0)
+}
+
 func (rs ReminderService) Cancel(reminderId uuid.UUID) bool {
 	if !rs.repo.Exists(reminderId) {
 		return false

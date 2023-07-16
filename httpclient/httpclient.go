@@ -52,6 +52,22 @@ func GetAllReminders() ([]common.Event, error) {
 	return events, err
 }
 
+func DeleteAllReminders() error {
+	req, err := http.NewRequest(http.MethodDelete, serverUrl+"/api/v1/reminders", nil)
+	if err != nil {
+		return common.ErrInternal
+	}
+
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		return common.ErrOnCallingServer
+	}
+	if resp.StatusCode != http.StatusOK {
+		return common.ErrOnDeletingAllReminders
+	}
+	return nil
+}
+
 func DeleteReminder(id string) error {
 	req, err := http.NewRequest(http.MethodDelete, serverUrl+"/api/v1/reminders/"+id, nil)
 	if err != nil {

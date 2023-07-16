@@ -8,6 +8,7 @@ const (
 	HoursFlag   = "hr"
 	TimeFlag    = "time"
 	IdFlag      = "id"
+	AllFlag     = "all"
 
 	// time format:
 	TimeFormat24Hours = "15:04:05"

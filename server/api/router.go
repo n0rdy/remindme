@@ -25,6 +25,7 @@ func (rmr RemindMeRouter) NewRouter() *chi.Mux {
 		r.Route("/reminders", func(r chi.Router) {
 			r.Get("/", rmr.getAllReminders)
 			r.Post("/", rmr.createNewReminder)
+			r.Delete("/", rmr.deleteAllReminders)
 			r.Delete("/{id}", rmr.deleteReminder)
 		})
 	})
@@ -49,6 +50,11 @@ func (rmr RemindMeRouter) createNewReminder(w http.ResponseWriter, req *http.Req
 	}
 
 	rmr.service.Set(reminder)
+	rmr.sendOkEmptyResponse(w)
+}
+
+func (rmr RemindMeRouter) deleteAllReminders(w http.ResponseWriter, req *http.Request) {
+	rmr.service.CancelAll()
 	rmr.sendOkEmptyResponse(w)
 }
 
