@@ -67,6 +67,17 @@ func (rs *ReminderService) Change(reminderId int, reminder common.Reminder) {
 	rs.setTimer(reminder)
 }
 
+// in case if the the reminder wasn't deleted (e.g. due to the error)
+func (rs *ReminderService) DeleteExpiredReminders() {
+	now := time.Now()
+
+	deletedIds := rs.repo.DeleteAllWithRemindAtBefore(now)
+	for _, id := range deletedIds {
+		rs.rmdIdToTimer[id].Stop()
+		delete(rs.rmdIdToTimer, id)
+	}
+}
+
 func (rs *ReminderService) setTimer(reminder common.Reminder) {
 	reminderTimer := time.AfterFunc(reminder.RemindAt.Sub(time.Now()), func() {
 		err := rs.notifier.Notify(reminder)
@@ -74,6 +85,7 @@ func (rs *ReminderService) setTimer(reminder common.Reminder) {
 			fmt.Println("error happened on trying to send a notification for the reminder "+strconv.Itoa(reminder.ID), err)
 		}
 		rs.repo.Delete(reminder.ID)
+		delete(rs.rmdIdToTimer, reminder.ID)
 	})
 
 	rs.rmdIdToTimer[reminder.ID] = reminderTimer

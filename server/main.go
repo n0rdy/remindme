@@ -7,6 +7,7 @@ import (
 	"remindme/server/api"
 	"remindme/server/repo"
 	"remindme/server/service"
+	"time"
 )
 
 func main() {
@@ -23,6 +24,15 @@ func main() {
 		if err != nil {
 			close(shutdownCh)
 			log.Println(err)
+		}
+	}()
+
+	ticker := time.NewTicker(5 * time.Minute)
+	defer ticker.Stop()
+	// job to delete expired reminders if any
+	go func() {
+		for range ticker.C {
+			srv.DeleteExpiredReminders()
 		}
 	}()
 

@@ -2,6 +2,7 @@ package repo
 
 import (
 	"remindme/server/common"
+	"time"
 )
 
 type ReminderRepo interface {
@@ -12,4 +13,5 @@ type ReminderRepo interface {
 	DeleteAll()
 	Delete(id int)
 	Exists(id int) bool
+	DeleteAllWithRemindAtBefore(threshold time.Time) []int
 }

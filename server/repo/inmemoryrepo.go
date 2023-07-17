@@ -2,6 +2,7 @@ package repo
 
 import (
 	"remindme/server/common"
+	"time"
 )
 
 type inMemoryReminderRepo struct {
@@ -47,6 +48,17 @@ func (repo *inMemoryReminderRepo) Delete(id int) {
 func (repo *inMemoryReminderRepo) Exists(id int) bool {
 	_, found := repo.reminders[id]
 	return found
+}
+
+func (repo *inMemoryReminderRepo) DeleteAllWithRemindAtBefore(threshold time.Time) []int {
+	deletedIds := make([]int, 0)
+	for id, reminder := range repo.reminders {
+		if reminder.RemindAt.Before(threshold) {
+			delete(repo.reminders, id)
+			deletedIds = append(deletedIds, id)
+		}
+	}
+	return deletedIds
 }
 
 func NewImMemoryReminderRepo() ReminderRepo {
