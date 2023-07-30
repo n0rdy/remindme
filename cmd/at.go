@@ -15,7 +15,7 @@ var atCmd = &cobra.Command{
 	Short: "Create a reminder to be notified about it at some point in time",
 	Long: `Create a reminder to be notified about it at some point in time.
 
-The command accepts the exact time the notification should be sent at in 24 hours "hh:mm" format (e.g. 13:05 or 09:45).
+The command accepts the exact time the notification should be sent at in either 24 hours "hh:mm" format (e.g. 13:05 or 09:45) via --time flag, or 12 hours "hh:mm" A.M./P.M. format via --am/--pm flag.
 The provided time should be in future - otherwise, the error will be produced.
 The command expects a reminder message to be provided via the "--about" flag - otherwise, the error will be produced.
 
@@ -34,6 +34,8 @@ func init() {
 
 	atCmd.Flags().StringP(common.AboutFlag, "a", "", "Reminder message")
 	atCmd.Flags().StringP(common.TimeFlag, "t", "", "Time to remind at for `at` command in 24-hours HH:MM format: e.g. 16:30, 07:45, 00:00")
+	atCmd.Flags().String(common.AmFlag, "", "A.M. time to remind at for `at` command in 12-hours HH:MM format: e.g. 07:45")
+	atCmd.Flags().String(common.PmFlag, "", "P.M. time to remind at for `at` command in 12-hours HH:MM format: e.g. 07:45")
 }
 
 func parseAtCmd(cmd *cobra.Command) (*common.Event, error) {
@@ -65,9 +67,28 @@ func calcRemindAtForAtFlag(flags *pflag.FlagSet) (time.Time, error) {
 	if err != nil {
 		return now, common.ErrWrongFormattedStringFlag(common.TimeFlag)
 	}
-	if t == "" {
-		return now, common.ErrAtCmdTimeNotProvided
+	am, err := flags.GetString(common.AmFlag)
+	if err != nil {
+		return now, common.ErrWrongFormattedStringFlag(common.AmFlag)
+	}
+	pm, err := flags.GetString(common.PmFlag)
+	if err != nil {
+		return now, common.ErrWrongFormattedStringFlag(common.PmFlag)
 	}
 
-	return utils.ToNotificationTime(t)
+	if t == "" && am == "" && pm == "" {
+		return now, common.ErrAtCmdTimeNotProvided
+	}
+	// more than 1 time-related flag is provided
+	if (t != "" && am != "") || (t != "" && pm != "") || (am != "" && pm != "") {
+		return now, common.ErrAtCmdInvalidTimeflagsProvided
+	}
+
+	if t != "" {
+		return utils.TimeFrom24HoursString(t)
+	} else if am != "" {
+		return utils.TimeFrom12HoursAmPmString(am, utils.AM)
+	} else {
+		return utils.TimeFrom12HoursAmPmString(pm, utils.PM)
+	}
 }

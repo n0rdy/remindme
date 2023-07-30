@@ -128,7 +128,7 @@ func parseChangeCmd(cmd *cobra.Command) (*ChangeFlags, error) {
 		changeFlags.Minutes = minutes
 		changeFlags.Hours = hours
 	} else if t != "" {
-		remindAt, err := utils.ToNotificationTime(t)
+		remindAt, err := utils.TimeFrom24HoursString(t)
 		if err != nil {
 			return nil, err
 		}

@@ -7,10 +7,13 @@ const (
 	MinutesFlag  = "min"
 	HoursFlag    = "hr"
 	TimeFlag     = "time"
+	AmFlag       = "am"
+	PmFlag       = "pm"
 	IdFlag       = "id"
 	AllFlag      = "all"
 	PostponeFlag = "postpone"
 
 	// time format:
-	TimeFormat24Hours = "15:04:05"
+	TimeFormat12AmPmHours = "03:04 PM"
+	TimeFormat24Hours     = "15:04:05"
 )
