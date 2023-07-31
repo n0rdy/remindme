@@ -5,9 +5,12 @@ import (
 	"github.com/spf13/cobra"
 	"n0rdy.me/remindme/common"
 	"n0rdy.me/remindme/httpclient"
+	"os"
+	"text/tabwriter"
 )
 
-const eventTemplate = "ID: \"%d\", Message: \"%s\", RemindAt: \"%s\"\n"
+const eventTitle = "ID\tMessage\tRemind at\t"
+const eventTemplate = "%d\t%s\t%s\n"
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
@@ -25,9 +28,7 @@ Cancel event with the "cancel --id ${EVENT_ID}" command`,
 			return err
 		}
 
-		for _, event := range events {
-			printEvent(event)
-		}
+		printEvents(events)
 		return nil
 	},
 }
@@ -36,6 +37,16 @@ func init() {
 	rootCmd.AddCommand(listCmd)
 }
 
-func printEvent(event common.Event) {
-	fmt.Printf(eventTemplate, event.ID, event.Message, event.RemindAt.String())
+func printEvents(events []common.Event) {
+	if len(events) == 0 {
+		return
+	}
+
+	w := tabwriter.NewWriter(os.Stdout, 1, 1, 5, ' ', 0)
+	fmt.Fprintln(w, eventTitle)
+
+	for _, event := range events {
+		fmt.Fprintf(w, eventTemplate, event.ID, event.Message, event.RemindAt.Format(common.DateTimeFormatNoTimeZone))
+	}
+	w.Flush()
 }
