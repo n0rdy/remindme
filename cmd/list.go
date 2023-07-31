@@ -38,10 +38,6 @@ func init() {
 }
 
 func printEvents(events []common.Event) {
-	if len(events) == 0 {
-		return
-	}
-
 	w := tabwriter.NewWriter(os.Stdout, 1, 1, 5, ' ', 0)
 	fmt.Fprintln(w, eventTitle)
 
