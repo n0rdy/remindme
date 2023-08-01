@@ -106,6 +106,9 @@ func DeleteReminder(id int) error {
 	if err != nil {
 		return common.ErrHttpOnCallingServer
 	}
+	if resp.StatusCode == http.StatusNotFound {
+		return common.ErrHttpReminderNotFound
+	}
 	if resp.StatusCode != http.StatusOK {
 		return common.ErrHttpOnDeletingReminder
 	}

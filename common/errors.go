@@ -33,15 +33,16 @@ var (
 
 	// HTTP client errors:
 	ErrHttpOnCallingServer        = errors.New("seems like the application is down: please, run `start` command")
-	ErrHttpOnSettingUpReminder    = errors.New("error on setting up the reminder")
-	ErrHttpOnGettingAllReminders  = errors.New("error on getting all reminders")
-	ErrHttpOnGettingReminderById  = errors.New("error on getting reminder by ID")
+	ErrHttpOnChangingReminder     = errors.New("error on changing the reminder")
 	ErrHttpOnDeletingAllReminders = errors.New("error on cancelling all reminders")
 	ErrHttpOnDeletingReminder     = errors.New("error on cancelling the reminder")
-	ErrHttpOnChangingReminder     = errors.New("error on changing the reminder")
+	ErrHttpOnGettingAllReminders  = errors.New("error on getting all reminders")
+	ErrHttpOnGettingReminderById  = errors.New("error on getting reminder by ID")
+	ErrHttpOnSettingUpReminder    = errors.New("error on setting up the reminder")
 	ErrHttpOnTerminatingApp       = errors.New("error on terminating the app")
-	ErrHttpReminderNotFound       = errors.New("reminder not found with the provided ID")
-	ErrHttpInternal               = errors.New("internal error")
+
+	ErrHttpReminderNotFound = errors.New("reminder not found with the provided ID")
+	ErrHttpInternal         = errors.New("internal error")
 )
 
 func ErrWrongFormattedStringFlag(flagName string) error {
