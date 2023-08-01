@@ -1,7 +1,7 @@
 package service
 
 import (
-	"fmt"
+	"log"
 	"remindme/server/common"
 	"remindme/server/repo"
 	"remindme/server/service/idresolver"
@@ -69,6 +69,8 @@ func (rs *ReminderService) Change(reminderId int, reminder common.Reminder) {
 
 // in case if the the reminder wasn't deleted (e.g. due to the error)
 func (rs *ReminderService) DeleteExpiredReminders() {
+	log.Println("deleteExpiredReminders job: invoked")
+
 	now := time.Now()
 
 	deletedIds := rs.repo.DeleteAllWithRemindAtBefore(now)
@@ -76,13 +78,15 @@ func (rs *ReminderService) DeleteExpiredReminders() {
 		rs.rmdIdToTimer[id].Stop()
 		delete(rs.rmdIdToTimer, id)
 	}
+
+	log.Println("deleteExpiredReminders job: finished")
 }
 
 func (rs *ReminderService) setTimer(reminder common.Reminder) {
 	reminderTimer := time.AfterFunc(reminder.RemindAt.Sub(time.Now()), func() {
 		err := rs.notifier.Notify(reminder)
 		if err != nil {
-			fmt.Println("error happened on trying to send a notification for the reminder "+strconv.Itoa(reminder.ID), err)
+			log.Println("error happened on trying to send a notification for the reminder "+strconv.Itoa(reminder.ID), err)
 		}
 		rs.repo.Delete(reminder.ID)
 		delete(rs.rmdIdToTimer, reminder.ID)

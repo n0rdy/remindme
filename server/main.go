@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"remindme/server/api"
 	"remindme/server/repo"
 	"remindme/server/service"
@@ -13,10 +15,14 @@ import (
 func main() {
 	port := "15555"
 
+	setupLogger()
+
 	shutdownCh := make(chan struct{})
 	srv := service.NewReminderService(repo.NewImMemoryReminderRepo())
 	remindMeRouter := api.NewRemindMeRouter(&srv, shutdownCh)
 	httpRouter := remindMeRouter.NewRouter()
+
+	log.Println("http: starting server at port " + port)
 
 	server := &http.Server{Addr: ":" + port, Handler: httpRouter}
 	go func() {
@@ -37,6 +43,7 @@ func main() {
 	}()
 
 	for range shutdownCh {
+		log.Println("server shutdown requested")
 		err := server.Shutdown(context.Background())
 		if err != nil {
 			err := server.Close()
@@ -45,4 +52,15 @@ func main() {
 			}
 		}
 	}
+}
+
+func setupLogger() {
+	f, err := os.OpenFile("remindme_server_logs.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		fmt.Println("setting up logger failed", err)
+		return
+	}
+	defer f.Close()
+
+	log.SetOutput(f)
 }
