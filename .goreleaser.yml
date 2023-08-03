@@ -9,8 +9,6 @@ builds:
       - arm64
     env:
       - CGO_ENABLED=0
-    flags:
-      - -mod=vendor
 
 release:
   prerelease: auto
@@ -21,7 +19,7 @@ universal_binaries:
 brews:
   - name: remindme
     homepage: "https://github.com/n0rdy/remindme"
-    tap:
+    repository:
       owner: n0rdy
       name: homebrew-n0rdy
     commit_author:
