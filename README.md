@@ -12,7 +12,12 @@ Reminders are cross-platform compatible and are supposed to work on Windows, Lin
 Have fun!
 
 ## Installation
-TODO
+### MacOS
+- via Homebrew:
+```shell
+brew tap n0rdy/n0rdy
+brew install remindme
+```
 
 ## Usage
 ### Starting app
