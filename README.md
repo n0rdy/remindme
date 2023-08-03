@@ -12,6 +12,9 @@ Reminders are cross-platform compatible and are supposed to work on Windows, Lin
 Have fun!
 
 ## Installation
+
+Download the latest release for your OS from [GitHub](https://github.com/n0rdy/remindme/releases).
+
 ### MacOS
 - via Homebrew:
 ```shell
