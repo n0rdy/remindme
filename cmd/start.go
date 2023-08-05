@@ -30,7 +30,7 @@ Stop the remindme app with the "stop" command.`,
 			return common.ErrStartCmdAlreadyRunning
 		}
 
-		command := exec.Command("go", "run", "main.go")
+		command := exec.Command("go", "run", "remindme/server")
 		command.Dir = dir + string(os.PathSeparator) + "server"
 
 		if err := command.Start(); err != nil {
