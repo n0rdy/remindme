@@ -10,7 +10,7 @@ The idea behind this app is to use it for short-term reminders, e.g. to remind y
 Reminders are cross-platform compatible and are supposed to work on Windows, Linux, and MacOS (however, as of now, it has only been tested on MacOS - I'll update the docs once more OS platforms have been tested).
 
 The flow of the app is as follows:
-![](https://github.com/n0rdy/remindme/docs/flow.gif)
+![](https://github.com/n0rdy/remindme/blob/master/docs/flow.gif)
 
 Have fun! =)
 
