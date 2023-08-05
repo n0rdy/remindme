@@ -5,9 +5,9 @@ import (
 	"errors"
 	"github.com/go-chi/chi/v5"
 	"log"
+	"n0rdy.me/remindme/common"
+	"n0rdy.me/remindme/httpserver/service"
 	"net/http"
-	"remindme/server/common"
-	"remindme/server/service"
 	"strconv"
 )
 
@@ -80,7 +80,7 @@ func (rmr *RemindMeRouter) getReminder(w http.ResponseWriter, req *http.Request)
 
 	id, err := rmr.getId(req)
 	if err != nil {
-		log.Println("getReminder request: error on parsing event ID from the URL param", err)
+		log.Println("getReminder request: error on parsing reminder ID from the URL param", err)
 		rmr.sendErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -101,7 +101,7 @@ func (rmr *RemindMeRouter) deleteReminder(w http.ResponseWriter, req *http.Reque
 
 	id, err := rmr.getId(req)
 	if err != nil {
-		log.Println("deleteReminder request: error on parsing event ID from the URL param", err)
+		log.Println("deleteReminder request: error on parsing reminder ID from the URL param", err)
 		rmr.sendErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -122,7 +122,7 @@ func (rmr *RemindMeRouter) changeReminder(w http.ResponseWriter, req *http.Reque
 
 	id, err := rmr.getId(req)
 	if err != nil {
-		log.Println("changeReminder request: error on parsing event ID from the URL param", err)
+		log.Println("changeReminder request: error on parsing reminder ID from the URL param", err)
 		rmr.sendErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}

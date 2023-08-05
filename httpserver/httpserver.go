@@ -1,18 +1,18 @@
-package main
+package httpserver
 
 import (
 	"context"
 	"fmt"
 	"log"
+	"n0rdy.me/remindme/httpserver/api"
+	"n0rdy.me/remindme/httpserver/repo"
+	"n0rdy.me/remindme/httpserver/service"
 	"net/http"
 	"os"
-	"remindme/server/api"
-	"remindme/server/repo"
-	"remindme/server/service"
 	"time"
 )
 
-func main() {
+func Start() {
 	port := "15555"
 
 	setupLogger()

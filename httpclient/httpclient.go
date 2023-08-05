@@ -13,8 +13,8 @@ const serverUrl = "http://localhost:15555"
 
 var httpClient = http.Client{}
 
-func CreateReminder(event common.Event) error {
-	reqBody, err := json.Marshal(event)
+func CreateReminder(reminder common.Reminder) error {
+	reqBody, err := json.Marshal(reminder)
 	if err != nil {
 		return common.ErrHttpInternal
 	}
@@ -29,7 +29,7 @@ func CreateReminder(event common.Event) error {
 	return nil
 }
 
-func GetAllReminders() ([]common.Event, error) {
+func GetAllReminders() ([]common.Reminder, error) {
 	resp, err := httpClient.Get(serverUrl + "/api/v1/reminders")
 	if err != nil {
 		return nil, common.ErrHttpOnCallingServer
@@ -45,12 +45,12 @@ func GetAllReminders() ([]common.Event, error) {
 		return nil, common.ErrHttpInternal
 	}
 
-	events := make([]common.Event, 0)
-	err = json.Unmarshal(respBody, &events)
+	reminders := make([]common.Reminder, 0)
+	err = json.Unmarshal(respBody, &reminders)
 	if err != nil {
 		return nil, common.ErrHttpInternal
 	}
-	return events, err
+	return reminders, err
 }
 
 func DeleteAllReminders() error {
@@ -69,7 +69,7 @@ func DeleteAllReminders() error {
 	return nil
 }
 
-func GetReminder(id int) (*common.Event, error) {
+func GetReminder(id int) (*common.Reminder, error) {
 	resp, err := httpClient.Get(serverUrl + "/api/v1/reminders/" + strconv.Itoa(id))
 	if err != nil {
 		return nil, common.ErrHttpOnCallingServer
@@ -88,12 +88,12 @@ func GetReminder(id int) (*common.Event, error) {
 		return nil, common.ErrHttpInternal
 	}
 
-	event := common.Event{}
-	err = json.Unmarshal(respBody, &event)
+	reminder := common.Reminder{}
+	err = json.Unmarshal(respBody, &reminder)
 	if err != nil {
 		return nil, common.ErrHttpInternal
 	}
-	return &event, err
+	return &reminder, err
 }
 
 func DeleteReminder(id int) error {
@@ -115,8 +115,8 @@ func DeleteReminder(id int) error {
 	return nil
 }
 
-func ChangeReminder(id int, eventModifications common.Event) error {
-	reqBody, err := json.Marshal(eventModifications)
+func ChangeReminder(id int, reminderModifications common.Reminder) error {
+	reqBody, err := json.Marshal(reminderModifications)
 	if err != nil {
 		return common.ErrHttpInternal
 	}

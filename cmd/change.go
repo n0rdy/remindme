@@ -39,15 +39,15 @@ List the upcoming reminders with the "list" command.`,
 			return err
 		}
 
-		event, err := httpclient.GetReminder(changeFlags.Id)
+		reminder, err := httpclient.GetReminder(changeFlags.Id)
 		if err != nil {
 			return err
 		}
 
-		if modifiedEvent, changed := changeEvent(*event, *changeFlags); changed {
-			return httpclient.ChangeReminder(changeFlags.Id, modifiedEvent)
+		if modifiedReminder, changed := changeReminder(*reminder, *changeFlags); changed {
+			return httpclient.ChangeReminder(changeFlags.Id, modifiedReminder)
 		} else {
-			// all the provided changes have the same value as the event has
+			// all the provided changes have the same value as the reminder has
 			return nil
 		}
 	},
@@ -137,19 +137,19 @@ func parseChangeCmd(cmd *cobra.Command) (*ChangeFlags, error) {
 	return &changeFlags, nil
 }
 
-func changeEvent(event common.Event, changeFlags ChangeFlags) (common.Event, bool) {
+func changeReminder(reminder common.Reminder, changeFlags ChangeFlags) (common.Reminder, bool) {
 	var changed = false
-	if changeFlags.Message != "" && changeFlags.Message != event.Message {
-		event.Message = changeFlags.Message
+	if changeFlags.Message != "" && changeFlags.Message != reminder.Message {
+		reminder.Message = changeFlags.Message
 		changed = true
 	}
 
 	if changeFlags.IsPostpone {
-		event.RemindAt = utils.AddDuration(event.RemindAt, changeFlags.Seconds, changeFlags.Minutes, changeFlags.Hours)
+		reminder.RemindAt = utils.AddDuration(reminder.RemindAt, changeFlags.Seconds, changeFlags.Minutes, changeFlags.Hours)
 		changed = true
 	} else if !changeFlags.RemindAt.IsZero() {
-		event.RemindAt = changeFlags.RemindAt
+		reminder.RemindAt = changeFlags.RemindAt
 		changed = true
 	}
-	return event, changed
+	return reminder, changed
 }

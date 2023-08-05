@@ -13,11 +13,11 @@ import (
 type SortingFlags struct {
 	ShouldSort  bool
 	Asc         bool
-	SortingFunc func(events []common.Event, asc bool)
+	SortingFunc func(reminders []common.Reminder, asc bool)
 }
 
-const eventTitle = "ID\tMessage\tRemind at\t"
-const eventTemplate = "%d\t%s\t%s\n"
+const reminderTitle = "ID\tMessage\tRemind at\t"
+const reminderTemplate = "%d\t%s\t%s\n"
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
@@ -25,26 +25,26 @@ var listCmd = &cobra.Command{
 	Short: "List the upcoming reminders",
 	Long: `List the upcoming reminders.
 
-Please, note that due to possible eventual consistency, past events might be included within the list.
+Please, note that due to possible eventual consistency, past reminders might be included within the list.
 This should be resolved in a matter of seconds.
 
-Cancel event with the "cancel --id ${EVENT_ID}" command`,
+Cancel reminder with the "cancel --id ${REMINDER_ID}" command`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		sortingFlags, err := resolveSorting(cmd)
 		if err != nil {
 			return err
 		}
 
-		events, err := httpclient.GetAllReminders()
+		reminders, err := httpclient.GetAllReminders()
 		if err != nil {
 			return err
 		}
 
 		if sortingFlags.ShouldSort {
-			sortingFlags.SortingFunc(events, sortingFlags.Asc)
+			sortingFlags.SortingFunc(reminders, sortingFlags.Asc)
 		}
 
-		printEvents(events)
+		printReminders(reminders)
 		return nil
 	},
 }
@@ -87,7 +87,7 @@ func resolveSorting(cmd *cobra.Command) (*SortingFlags, error) {
 		return nil, common.ErrListCmdSortingInvalidSortingOrderFlagsProvided
 	}
 
-	var sortingFunc func(events []common.Event, asc bool)
+	var sortingFunc func(reminders []common.Reminder, asc bool)
 	if byMessage {
 		sortingFunc = sortByMessage
 	} else if byTime {
@@ -102,30 +102,30 @@ func resolveSorting(cmd *cobra.Command) (*SortingFlags, error) {
 	}, nil
 }
 
-func printEvents(events []common.Event) {
+func printReminders(reminders []common.Reminder) {
 	w := tabwriter.NewWriter(os.Stdout, 1, 1, 5, ' ', 0)
-	fmt.Fprintln(w, eventTitle)
+	fmt.Fprintln(w, reminderTitle)
 
-	for _, event := range events {
-		fmt.Fprintf(w, eventTemplate, event.ID, event.Message, event.RemindAt.Format(common.DateTimeFormatWithoutTimeZone))
+	for _, reminder := range reminders {
+		fmt.Fprintf(w, reminderTemplate, reminder.ID, reminder.Message, reminder.RemindAt.Format(common.DateTimeFormatWithoutTimeZone))
 	}
 	w.Flush()
 }
 
-func sortById(events []common.Event, asc bool) {
-	sort.Slice(events, func(i, j int) bool {
-		return events[i].ID < events[j].ID == asc
+func sortById(reminders []common.Reminder, asc bool) {
+	sort.Slice(reminders, func(i, j int) bool {
+		return reminders[i].ID < reminders[j].ID == asc
 	})
 }
 
-func sortByMessage(events []common.Event, asc bool) {
-	sort.Slice(events, func(i, j int) bool {
-		return events[i].Message < events[j].Message == asc
+func sortByMessage(reminders []common.Reminder, asc bool) {
+	sort.Slice(reminders, func(i, j int) bool {
+		return reminders[i].Message < reminders[j].Message == asc
 	})
 }
 
-func sortByTime(events []common.Event, asc bool) {
-	sort.Slice(events, func(i, j int) bool {
-		return events[i].RemindAt.Before(events[j].RemindAt) == asc
+func sortByTime(reminders []common.Reminder, asc bool) {
+	sort.Slice(reminders, func(i, j int) bool {
+		return reminders[i].RemindAt.Before(reminders[j].RemindAt) == asc
 	})
 }

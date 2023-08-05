@@ -1,7 +1,7 @@
 package repo
 
 import (
-	"remindme/server/common"
+	"n0rdy.me/remindme/common"
 	"time"
 )
 

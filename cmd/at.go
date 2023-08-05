@@ -21,11 +21,11 @@ The command expects a reminder message to be provided via the "--about" flag - o
 
 List the upcoming reminders with the "list" command.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		event, err := parseAtCmd(cmd)
+		reminder, err := parseAtCmd(cmd)
 		if err != nil {
 			return err
 		}
-		return httpclient.CreateReminder(*event)
+		return httpclient.CreateReminder(*reminder)
 	},
 }
 
@@ -38,7 +38,7 @@ func init() {
 	atCmd.Flags().String(common.PmFlag, "", "P.M. time to remind at for `at` command in 12-hours HH:MM format: e.g. 07:45")
 }
 
-func parseAtCmd(cmd *cobra.Command) (*common.Event, error) {
+func parseAtCmd(cmd *cobra.Command) (*common.Reminder, error) {
 	flags := cmd.Flags()
 
 	message, err := flags.GetString(common.AboutFlag)
@@ -54,7 +54,7 @@ func parseAtCmd(cmd *cobra.Command) (*common.Event, error) {
 		return nil, err
 	}
 
-	return &common.Event{
+	return &common.Reminder{
 		Message:  message,
 		RemindAt: remindAt,
 	}, nil

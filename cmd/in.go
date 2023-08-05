@@ -23,11 +23,11 @@ The command expects a reminder message to be provided via the "--about" flag - o
 
 List the upcoming reminders with the "list" command.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		event, err := parseInCmd(cmd)
+		reminder, err := parseInCmd(cmd)
 		if err != nil {
 			return err
 		}
-		return httpclient.CreateReminder(*event)
+		return httpclient.CreateReminder(*reminder)
 	},
 }
 
@@ -40,7 +40,7 @@ func init() {
 	inCmd.Flags().Int(common.HoursFlag, 0, "Hours for `in` command")
 }
 
-func parseInCmd(cmd *cobra.Command) (*common.Event, error) {
+func parseInCmd(cmd *cobra.Command) (*common.Reminder, error) {
 	flags := cmd.Flags()
 
 	message, err := flags.GetString(common.AboutFlag)
@@ -56,7 +56,7 @@ func parseInCmd(cmd *cobra.Command) (*common.Event, error) {
 		return nil, err
 	}
 
-	return &common.Event{
+	return &common.Reminder{
 		Message:  message,
 		RemindAt: remindAt,
 	}, nil

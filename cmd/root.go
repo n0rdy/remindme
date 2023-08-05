@@ -8,13 +8,10 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "remindme",
-	Short: "A tool to set reminders from the terminal",
-	Long:  `A tool to set reminders from the terminal.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
-	Version: "0.0.5",
+	Use:     "remindme",
+	Short:   "A tool to set reminders from the terminal",
+	Long:    `A tool to set reminders from the terminal.`,
+	Version: "0.0.6",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
