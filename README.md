@@ -25,6 +25,39 @@ brew tap n0rdy/n0rdy
 brew install remindme
 ```
 
+### Linux
+- via APT:
+#### Prerequisites
+To enable, add the following file /etc/apt/sources.list.d/fury.list:
+```text
+deb [trusted=yes] https://apt.fury.io/n0rdy/ /
+```
+You can do this either manually or by running the following command:
+```shell
+echo "deb [trusted=yes] https://apt.fury.io/n0rdy/ /" > /etc/apt/sources.list.d/fury.list
+```
+
+#### Installation
+```shell
+apt update && apt install remindme
+```
+
+- via YUM:
+#### Prerequisites
+To enable, add the following file /etc/yum.repos.d/fury.repo:
+```text
+[fury]
+name=Gemfury n0rdy Private Repo
+baseurl=https://yum.fury.io/n0rdy/
+enabled=1
+gpgcheck=0
+```
+
+#### Installation
+```shell
+yum install remindme
+```
+
 ## Usage
 ### Starting app
 To start the app, run the following command in the terminal:
