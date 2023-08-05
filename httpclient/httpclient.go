@@ -136,6 +136,16 @@ func ChangeReminder(id int, eventModifications common.Event) error {
 	return nil
 }
 
+func Healthcheck() bool {
+	resp, err := httpClient.Get(serverUrl + "/healthcheck")
+	if err != nil {
+		return false
+	}
+	defer resp.Body.Close()
+
+	return resp.StatusCode == http.StatusOK
+}
+
 func StopServer() error {
 	req, err := http.NewRequest(http.MethodDelete, serverUrl+"/shutdown", nil)
 	if err != nil {

@@ -3,6 +3,8 @@ package cmd
 import (
 	"errors"
 	"github.com/spf13/cobra"
+	"n0rdy.me/remindme/common"
+	"n0rdy.me/remindme/httpclient"
 	"os"
 	"os/exec"
 )
@@ -22,6 +24,10 @@ Stop the remindme app with the "stop" command.`,
 		dir, err := os.Getwd()
 		if err != nil {
 			return errors.New("unable to get the current filename")
+		}
+
+		if httpclient.Healthcheck() {
+			return common.ErrStartCmdAlreadyRunning
 		}
 
 		command := exec.Command("go", "run", "main.go")

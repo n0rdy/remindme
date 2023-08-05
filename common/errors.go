@@ -26,6 +26,7 @@ var (
 	ErrListCmdSortingInvalidSortByFlagsProvided       = errors.New("either --id, --message or --time flag should be provided, not both")
 	ErrListCmdSortingInvalidSortingOrderFlagsProvided = errors.New("either --asc or --desc flag should be provided, not both")
 	ErrListCmdSortingNotRequested                     = errors.New("--sort flag should be provided alongside the other sorting flags")
+	ErrStartCmdAlreadyRunning                         = errors.New("the application is already running, please, run the desired command")
 
 	ErrCmdTimeShouldBeInFuture          = errors.New("provided time should be in future")
 	ErrCmdWrongFormatted24HoursTime     = errors.New("time should be provided in 24-hours HH:MM format: e.g. `16:30`, `07:45`, `00:00`")
