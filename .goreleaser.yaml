@@ -37,8 +37,12 @@ brews:
     commit_author:
       name: n0rdy
       email: n0rdy@pm.me
+    commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
+    install: |-
+      bin.install "{{.ProjectName}}"
 
 nfpms:
+  - maintainer: n0rdy <n0rdy@pm.me>
   - id: packages
     file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 

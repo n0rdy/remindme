@@ -21,16 +21,16 @@ for sending the notifications once the requested time comes.
 
 Stop the remindme app with the "stop" command.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		if httpclient.Healthcheck() {
+			return common.ErrStartCmdAlreadyRunning
+		}
+
 		dir, err := os.Getwd()
 		if err != nil {
 			return errors.New("unable to get the current filename")
 		}
 
-		if httpclient.Healthcheck() {
-			return common.ErrStartCmdAlreadyRunning
-		}
-
-		command := exec.Command("go", "run", "remindme/server")
+		command := exec.Command("go", "run", "main.go")
 		command.Dir = dir + string(os.PathSeparator) + "server"
 
 		if err := command.Start(); err != nil {
