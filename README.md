@@ -5,13 +5,16 @@ Hello there! =)
 
 This is a simple terminal reminder app. It allows you to add, delete, and view reminders. Reminders are stored in-memory and are not persistent.
 
-The idea behind this app is to use it for a short-term reminders, e.g. to remind you to do something in 2 hours.
+The idea behind this app is to use it for short-term reminders, e.g. to remind you to do something in 2 hours.
 
-Reminders are cross-platform compatible and are supposed to work on Windows, Linux, and MacOS (however, as of now it has only been tested on MacOS - I'll update the docs once more OS platforms have been tested).
+Reminders are cross-platform compatible and are supposed to work on Windows, Linux, and MacOS (however, as of now, it has only been tested on MacOS - I'll update the docs once more OS platforms have been tested).
 
 Have fun!
 
 ## Installation
+### Prerequisites
+- [Go](https://golang.org/doc/install) (version 1.20 or higher)
+
 ### Manual
 Download the latest release for your OS from [GitHub](https://github.com/n0rdy/remindme/releases).
 
@@ -41,7 +44,7 @@ remindme in --hr 2 --min 30 --sec 10 --about "Do something cool"
 ```shell
 remindme at --time 22:30 --about "Do something cool"
 ```
-It is also to specify the time in 12-hour A.M./P.M format:
+It is also possible to specify the time in 12-hour A.M./P.M format:
 ```shell
 remindme at --pm 10:30 --about "Do something cool"
 ``` 
@@ -56,7 +59,8 @@ remindme at --am 10:30 --about "Do something cool"
 remindme list
 ```
 
-`list` command also supports sorting the list of reminders by ID, message or time in ascending or descending order. By default the list is provided in random order. If the sorting is requested, by the order of sorting is not specified, the ascending order is used.
+The `list` command also supports sorting the list of reminders by ID, message or time in an ascending or descending order. 
+By default, the list is provided in a random order. If the sorting is requested, but the sorting order is not specified, the ascending order is used.
 - to sort by ID, run:
 ```shell
 remindme list --sort --id
@@ -75,7 +79,7 @@ remindme list --sort --time --desc
 ```shell
 remindme cancel --id 1
 ```
-where `1` is the ID of the reminder to be canceled. The ID can be obtained by running `remindme list` command.
+where `1` is the ID of the reminder to be cancelled. The ID can be obtained by running `remindme list` command.
 
 - to cancel all reminders, run:
 ```shell
