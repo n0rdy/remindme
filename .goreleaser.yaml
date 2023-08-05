@@ -38,13 +38,12 @@ brews:
       name: n0rdy
       email: n0rdy@pm.me
     commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
-    install: |-
-      bin.install "{{.ProjectName}}"
+    license: "GPL-3.0"
 
 nfpms:
-  - maintainer: n0rdy <n0rdy@pm.me>
   - id: packages
     file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    maintainer: n0rdy <n0rdy@pm.me>
 
 publishers:
   - name: fury.io
