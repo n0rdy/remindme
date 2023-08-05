@@ -28,3 +28,4 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.PUBLISHER_TOKEN }}
+          FURY_TOKEN: ${{ secrets.FURY_PUSH_TOKEN }}
