@@ -42,9 +42,9 @@ brews:
       bin.install "{{.ProjectName}}"
 
 nfpms:
-  - maintainer: n0rdy <n0rdy@pm.me>
   - id: packages
     file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    maintainer: n0rdy <n0rdy@pm.me>
 
 publishers:
   - name: fury.io
