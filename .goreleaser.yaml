@@ -52,8 +52,6 @@ nfpms:
     formats:
       - deb
       - rpm
-      - termux.deb
-      - archlinux
 
 publishers:
   - name: fury.io
