@@ -20,7 +20,7 @@ Have fun! =)
 
 ## Installation
 ### Prerequisites
-- [Go](https://golang.org/doc/install) (version 1.20 or higher)
+- [Go](https://golang.org/doc/install) (version 1.20 or higher) if you want to build the app from the source code.
 
 ### Manual
 Download the latest release for your OS from [GitHub](https://github.com/n0rdy/remindme/releases).
@@ -156,4 +156,4 @@ remindme stop
 ```shell
 remindme help
 ```
-Please, note that some flags have shortcuts, e.g. `--about` can be replaced with `-a`, `--time` with `-t`, etc. To see the full list of shortcuts, run the `help` command.
+Please, note that some flags have shortcuts, e.g. `--about` can be replaced with `-a`, `--time` with `-t`, etc. To see the full list of shortcuts, run the `remindme help`.
