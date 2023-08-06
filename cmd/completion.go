@@ -15,12 +15,12 @@ var completionCmd = &cobra.Command{
 	Short: "Generate terminal completion for remindme command",
 	Long: `Generate terminal completion for remindme command.
 
-To load your completions run
+To load remindme completions on run
    source <(remindme completion)
-To load completions automatically on login, add this line to your .bashrc, .zshrc or config.fish file: 
+To load remindme completions automatically on login, add this line to your .bashrc, .zshrc or config.fish file: 
 source <(remindme completion)
 
-Please, check the PowerShell documentation (https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/register-argumentcompleter?view=powershell-7.3) for more information about how to load completions for this shell type.`,
+Please, check the PowerShell documentation (https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/register-argumentcompleter?view=powershell-7.3) for more information about loading completions for this shell type.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		log.Println("completion command: called")
 		return setCompletionIfPossible()

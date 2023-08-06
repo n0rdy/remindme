@@ -156,6 +156,35 @@ remindme stop
 ```shell
 remindme help
 ```
-Please, note that some flags have shortcuts, e.g. `--about` can be replaced with `-a`, `--time` with `-t`, etc. To see the full list of shortcuts, run the `remindme help`.
 
-Find documentation for each command within the [docs](https://github.com/n0rdy/remindme/blob/master/docs/remindme.md) folder.
+### Completion
+remindme app provides a possibility to use completion for the commands and flags. To generate the completion, run the following command in the terminal:
+```shell
+remindme completion
+```
+This will generate the completion for the current shell. 
+To enable the completion for the current shell run, use this command:
+```shell
+source <(remindme completion)
+```
+To enable the completion for the current shell permanently, add this line to your `.bashrc`, `.zshrc` or `config.fish` file:
+```shell
+source <(remindme completion)
+```
+
+If you are on Windows with PowerShell, it is possible to generate the completion by running the following command:
+```shell
+remindme completion
+```
+Please, check the [PowerShell documentation](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/register-argumentcompleter?view=powershell-7.3) for more information about loading completions for this shell type.
+
+### Documentation generation
+To generate the documentation for the app in the MD-format, run the following command in the terminal:
+```shell
+remindme docs --dir "path_to_dir"
+```
+If the `--dir` flag is not specified, the documentation will be generated in the temp directory on your machine - the path to the directory will be printed to the terminal as a result of `docs` command execution.
+You can find the same docs (as generated) within the [docs](https://github.com/n0rdy/remindme/blob/master/docs/remindme.md) folder on GitHub.
+
+### Additional information
+Please, note that some flags have shortcuts, e.g. `--about` can be replaced with `-a`, `--time` with `-t`, etc. To see the full list of shortcuts, run the `remindme help`.
