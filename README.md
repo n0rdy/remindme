@@ -7,7 +7,11 @@ This is a simple terminal reminder app. It allows you to add, delete, and view r
 
 The idea behind this app is to use it for short-term reminders, e.g. to remind you to do something in 2 hours.
 
-Reminders are cross-platform compatible and are supposed to work on Windows, Linux, and MacOS (however, as of now, it has only been tested on MacOS - I'll update the docs once more OS platforms have been tested).
+Reminders are cross-platform compatible and are supposed to work on Windows, Linux, and MacOS.
+So far, the app has been tested on: 
+- MacBook Pro 2019 with MacOS Ventura 13.5, Intel Core i9 x64 CPU and zsh 5.9 (x86_64-apple-darwin22.1.0)
+- MacBook Pro 2023 with MacOS Ventura 13.5, Apple M2 Max x64 CPU and zsh 5.9 (x86_64-apple-darwin22.0)
+- ASUS with Windows 10 Home (version 21H2), Intel Core i5 x64 CPU and Windows PowerShell 5.1.19041.1682
 
 The flow of the app is as follows:
 ![](https://github.com/n0rdy/remindme/blob/master/docs/flow.gif)
@@ -125,7 +129,7 @@ remindme cancel --all
 ### Changing the reminder message or/and time
 - to change the message of a reminder, run:
 ```shell
-remindme change --id 1 --message "Do something else, but also cool"
+remindme change --id 1 --about "Do something else, but also cool"
 ```
 where `1` is the ID of the reminder to be changed. The ID can be obtained by running `remindme list` command.
 

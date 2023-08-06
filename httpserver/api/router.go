@@ -55,7 +55,7 @@ func (rmr *RemindMeRouter) createNewReminder(w http.ResponseWriter, req *http.Re
 	var reminder common.Reminder
 	err := json.NewDecoder(req.Body).Decode(&reminder)
 	if err != nil {
-		log.Println("createNewReminder request: unexpected error happened on decoding request body", err)
+		log.Println("createNewReminder request: unexpected error happened on request body decoding", err)
 		rmr.sendErrorResponse(w, http.StatusBadRequest, common.ErrCodeRequestBody)
 		return
 	}
@@ -130,7 +130,7 @@ func (rmr *RemindMeRouter) changeReminder(w http.ResponseWriter, req *http.Reque
 	var reminder common.Reminder
 	err = json.NewDecoder(req.Body).Decode(&reminder)
 	if err != nil {
-		log.Println("changeReminder request: unexpected error happened on decoding request body", err)
+		log.Println("changeReminder request: unexpected error happened on request body decoding", err)
 		rmr.sendErrorResponse(w, http.StatusBadRequest, common.ErrCodeRequestBody)
 		return
 	}

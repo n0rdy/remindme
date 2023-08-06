@@ -18,11 +18,10 @@ func Start() {
 	f, err := os.OpenFile("remindme_server_logs.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
 		fmt.Println("setting up logger failed", err)
-		return
+	} else {
+		log.SetOutput(f)
 	}
 	defer f.Close()
-
-	log.SetOutput(f)
 
 	shutdownCh := make(chan struct{})
 	srv := service.NewReminderService(repo.NewImMemoryReminderRepo())
