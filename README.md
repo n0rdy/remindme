@@ -5,18 +5,18 @@ Hello there!
 
 This is a simple terminal reminder app. It allows you to add, delete, and view reminders. Reminders are stored in-memory and are not persistent.
 
-The idea behind this app is to use it for short-term reminders, e.g. to remind you to do something in 2 hours.
+The idea behind this app is to use it for short-term reminders, e.g. to remind you to do something in 2 hours or in 10 minutes.
+
+The flow of the app is as follows:
+![](https://github.com/n0rdy/remindme/blob/master/docs/flow.gif)
 
 Reminders are cross-platform compatible and are supposed to work on Windows, Linux, and MacOS.
-So far, the app has been tested on: 
+So far, the app has been tested on:
 - MacOS Ventura 13.5 with Intel Core i9 x64 CPU and zsh 5.9 (x86_64-apple-darwin22.1.0)
 - MacOS Ventura 13.5 with Apple M2 Max x64 CPU and zsh 5.9 (x86_64-apple-darwin22.0)
 - Ubuntu 22.04.2 LTS (via VirtualBox) with Intel Core i9 x64 CPU and bash 5.1.16(1)-release (x86_64-pc-linux-gnu)
 - Fedora Workstation 38 (via VirtualBox) with Intel Core i9 x64 CPU and bash 5.2.15(1)-release (x86_64-redhat-linux-gnu)
 - Windows 10 Home (version 21H2) with Intel Core i5 x64 CPU and Windows PowerShell 5.1.19041.1682
-
-The flow of the app is as follows:
-![](https://github.com/n0rdy/remindme/blob/master/docs/flow.gif)
 
 Have fun! =)
 
