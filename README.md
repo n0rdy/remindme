@@ -157,3 +157,5 @@ remindme stop
 remindme help
 ```
 Please, note that some flags have shortcuts, e.g. `--about` can be replaced with `-a`, `--time` with `-t`, etc. To see the full list of shortcuts, run the `remindme help`.
+
+Find documentation for each command within the [docs](https://github.com/n0rdy/remindme/blob/master/docs/remindme.md) folder.
