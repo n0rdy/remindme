@@ -24,7 +24,7 @@ Stop the remindme app with the "stop" command.`,
 			return common.ErrStartCmdAlreadyRunning
 		}
 
-		command := exec.Command("remindme", "adminStartServer")
+		command := exec.Command(resolveExecBinary(), "adminStartServer")
 		command.Stderr = os.Stderr
 
 		if err := command.Start(); err != nil {
@@ -36,4 +36,15 @@ Stop the remindme app with the "stop" command.`,
 
 func init() {
 	rootCmd.AddCommand(startCmd)
+}
+
+func resolveExecBinary() string {
+	execBinary, err := os.Executable()
+	if err != nil {
+		execBinary = os.Args[0]
+	}
+	if execBinary == "" {
+		execBinary = "remindme"
+	}
+	return execBinary
 }
