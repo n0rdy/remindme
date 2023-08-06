@@ -53,6 +53,8 @@ nfpms:
       - apk
       - deb
       - rpm
+      - termux.deb
+      - archlinux
 
 publishers:
   - name: fury.io
