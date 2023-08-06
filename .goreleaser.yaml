@@ -30,7 +30,7 @@ snapshot:
 
 brews:
   - name: remindme
-    homepage: "https://github.com/n0rdy/remindme"
+    homepage: https://github.com/n0rdy/remindme
     repository:
       owner: n0rdy
       name: homebrew-n0rdy
@@ -38,12 +38,21 @@ brews:
       name: n0rdy
       email: n0rdy@pm.me
     commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
+    install: |-
+      bin.install "{{.ProjectName}}"
     license: "GPL-3.0"
 
 nfpms:
   - id: packages
-    file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    package_name: remindme
     maintainer: n0rdy <n0rdy@pm.me>
+    license: GPL-3.0
+    file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    homepage: https://github.com/n0rdy/remindme
+    formats:
+      - apk
+      - deb
+      - rpm
 
 publishers:
   - name: fury.io
