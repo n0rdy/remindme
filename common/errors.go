@@ -22,8 +22,10 @@ var (
 	ErrChangeCmdInvalidPostponeDuration               = errors.New("duration provided for `change` command alongside the `--postpone` flag via `--hr`, `--min` or/and `--sec` flags should be either 0 or a positive integer value`")
 	ErrChangeCmdInvalidTimeFlagsProvided              = errors.New("either `--time` or `--postpone` flags should be provided for `change` command, not both")
 	ErrChangeCmdPostponeDurationNotProvided           = errors.New("duration should be provided for `change` command alongside the `--postpone` flag: use `--hr`, `--min` or/and `--sec` flags with corresponding integer values`")
-	ErrCompletionUnknownOS                            = errors.New("can't set up completion: can't detect OS type")
-	ErrCompletionUnknownShell                         = errors.New("can't set up completion: can't detect shell type")
+	ErrCompletionCmdUnknownOS                         = errors.New("can't set up completion: can't detect OS type")
+	ErrCompletionCmdUnknownShell                      = errors.New("can't set up completion: can't detect shell type")
+	ErrDocsCmdOnDirCreation                           = errors.New("can't create directory for documentation")
+	ErrDocsCmdOnDocsGeneration                        = errors.New("can't generate documentation")
 	ErrInAtCmdNoMessageProvided                       = errors.New("message should be provided for `in`/`at` command: use `--about` flag with corresponding text message")
 	ErrInCmdDurationNotProvided                       = errors.New("duration should be provided for `in` command: use `--hr`, `--min` or/and `--sec` flags with corresponding integer values`")
 	ErrInCmdInvalidDuration                           = errors.New("duration provided for `in` command via `--hr`, `--min` or/and `--sec` flags should be either 0 or a positive integer value`")
@@ -64,10 +66,10 @@ func ErrWrongFormattedIntFlag(flagName string) error {
 	return errors.New(fmt.Sprintf(errWrongFormattedIntFlagTemplate, flagName))
 }
 
-func ErrCompletionUnsupportedShell(shellType string) error {
+func ErrCompletionCmdUnsupportedShell(shellType string) error {
 	return errors.New(fmt.Sprintf(errCompletionUnsupportedShellTemplate, shellType))
 }
 
-func ErrCompletionUnsupportedOs(osType string) error {
+func ErrCompletionCmdUnsupportedOs(osType string) error {
 	return errors.New(fmt.Sprintf(errCompletionUnsupportedOsTemplate, osType))
 }

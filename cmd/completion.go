@@ -11,8 +11,8 @@ import (
 // completionCmd represents the completion command
 var completionCmd = &cobra.Command{
 	Use:   "completion",
-	Short: "Generate terminal completion for your command",
-	Long: `Generate terminal completion for your command.
+	Short: "Generate terminal completion for remindme command",
+	Long: `Generate terminal completion for remindme command.
 
 To load your completions run
    source <(remindme completion)
@@ -42,16 +42,16 @@ func setCompletionIfPossible() error {
 		case "fish":
 			return rootCmd.GenZshCompletion(os.Stdout)
 		case "":
-			return common.ErrCompletionUnknownShell
+			return common.ErrCompletionCmdUnknownShell
 		default:
-			return common.ErrCompletionUnsupportedShell(shellType)
+			return common.ErrCompletionCmdUnsupportedShell(shellType)
 		}
 	case "windows":
 		return rootCmd.GenPowerShellCompletion(os.Stdout)
 	case "":
-		return common.ErrCompletionUnknownOS
+		return common.ErrCompletionCmdUnknownOS
 	default:
-		return common.ErrCompletionUnsupportedOs(osType)
+		return common.ErrCompletionCmdUnsupportedOs(osType)
 	}
 }
 
