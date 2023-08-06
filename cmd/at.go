@@ -39,6 +39,8 @@ func init() {
 	atCmd.Flags().StringP(common.TimeFlag, "t", "", "Time to remind at for `at` command in 24-hours HH:MM format: e.g. 16:30, 07:45, 00:00")
 	atCmd.Flags().String(common.AmFlag, "", "A.M. time to remind at for `at` command in 12-hours HH:MM format: e.g. 07:45")
 	atCmd.Flags().String(common.PmFlag, "", "P.M. time to remind at for `at` command in 12-hours HH:MM format: e.g. 07:45")
+
+	atCmd.MarkFlagRequired(common.AboutFlag)
 }
 
 func parseAtCmd(cmd *cobra.Command) (*common.Reminder, error) {

@@ -41,6 +41,8 @@ func init() {
 	inCmd.Flags().Int(common.SecondsFlag, 0, "Seconds for `in` command")
 	inCmd.Flags().Int(common.MinutesFlag, 0, "Minutes for `in` command")
 	inCmd.Flags().Int(common.HoursFlag, 0, "Hours for `in` command")
+
+	inCmd.MarkFlagRequired(common.AboutFlag)
 }
 
 func parseInCmd(cmd *cobra.Command) (*common.Reminder, error) {

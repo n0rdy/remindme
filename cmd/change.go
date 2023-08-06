@@ -66,6 +66,8 @@ func init() {
 	changeCmd.Flags().Int(common.SecondsFlag, 0, "Seconds to shift the existing notification time with - should be passed alongside the `--postpone` flag")
 	changeCmd.Flags().Int(common.MinutesFlag, 0, "Minutes to shift the existing notification time with - should be passed alongside the `--postpone` flag")
 	changeCmd.Flags().Int(common.HoursFlag, 0, "Hours to shift the existing notification time with - should be passed alongside the `--postpone` flag")
+
+	changeCmd.MarkFlagRequired(common.IdFlag)
 }
 
 func parseChangeCmd(cmd *cobra.Command) (*ChangeFlags, error) {
