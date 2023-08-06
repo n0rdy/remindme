@@ -6,8 +6,10 @@ import (
 )
 
 const (
-	errWrongFormattedStringFlagTemplate = "wrong formatted flag [%s] - expected to be of type string"
-	errWrongFormattedIntFlagTemplate    = "wrong formatted flag [%s] - expected to be of type int32"
+	errWrongFormattedStringFlagTemplate   = "wrong formatted flag [%s] - expected to be of type string"
+	errWrongFormattedIntFlagTemplate      = "wrong formatted flag [%s] - expected to be of type int32"
+	errCompletionUnsupportedShellTemplate = "can't set up completion: unsupported shell type [%s]"
+	errCompletionUnsupportedOsTemplate    = "can't set up completion: unsupported OS type [%s]"
 )
 
 var (
@@ -20,6 +22,8 @@ var (
 	ErrChangeCmdInvalidPostponeDuration               = errors.New("duration provided for `change` command alongside the `--postpone` flag via `--hr`, `--min` or/and `--sec` flags should be either 0 or a positive integer value`")
 	ErrChangeCmdInvalidTimeFlagsProvided              = errors.New("either `--time` or `--postpone` flags should be provided for `change` command, not both")
 	ErrChangeCmdPostponeDurationNotProvided           = errors.New("duration should be provided for `change` command alongside the `--postpone` flag: use `--hr`, `--min` or/and `--sec` flags with corresponding integer values`")
+	ErrCompletionUnknownOS                            = errors.New("can't set up completion: can't detect OS type")
+	ErrCompletionUnknownShell                         = errors.New("can't set up completion: can't detect shell type")
 	ErrInAtCmdNoMessageProvided                       = errors.New("message should be provided for `in`/`at` command: use `--about` flag with corresponding text message")
 	ErrInCmdDurationNotProvided                       = errors.New("duration should be provided for `in` command: use `--hr`, `--min` or/and `--sec` flags with corresponding integer values`")
 	ErrInCmdInvalidDuration                           = errors.New("duration provided for `in` command via `--hr`, `--min` or/and `--sec` flags should be either 0 or a positive integer value`")
@@ -58,4 +62,12 @@ func ErrWrongFormattedStringFlag(flagName string) error {
 
 func ErrWrongFormattedIntFlag(flagName string) error {
 	return errors.New(fmt.Sprintf(errWrongFormattedIntFlagTemplate, flagName))
+}
+
+func ErrCompletionUnsupportedShell(shellType string) error {
+	return errors.New(fmt.Sprintf(errCompletionUnsupportedShellTemplate, shellType))
+}
+
+func ErrCompletionUnsupportedOs(osType string) error {
+	return errors.New(fmt.Sprintf(errCompletionUnsupportedOsTemplate, osType))
 }
