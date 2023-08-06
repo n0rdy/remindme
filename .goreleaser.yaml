@@ -50,7 +50,6 @@ nfpms:
     file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     homepage: https://github.com/n0rdy/remindme
     formats:
-      - apk
       - deb
       - rpm
       - termux.deb
