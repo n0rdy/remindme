@@ -42,7 +42,7 @@ echo "deb [trusted=yes] https://apt.fury.io/n0rdy/ /" > /etc/apt/sources.list.d/
 
 #### Installation
 ```shell
-apt update && apt install remindme
+sudo apt update && sudo apt install remindme
 ```
 
 - via YUM:
@@ -58,7 +58,7 @@ gpgcheck=0
 
 #### Installation
 ```shell
-yum install remindme
+sudo yum install remindme
 ```
 
 ## Usage
