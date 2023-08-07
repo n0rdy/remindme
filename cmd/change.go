@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"log"
 	"n0rdy.me/remindme/common"
 	"n0rdy.me/remindme/httpclient"
+	"n0rdy.me/remindme/logger"
 	"n0rdy.me/remindme/utils"
 	"time"
 )
@@ -35,7 +35,7 @@ Negative integer values are not accepted - the error will be produced in such ca
 
 List the upcoming reminders with the "list" command.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		log.Println("change command: called")
+		logger.Log("change command: called")
 
 		changeFlags, err := parseChangeCmd(cmd)
 		if err != nil {
@@ -75,23 +75,23 @@ func parseChangeCmd(cmd *cobra.Command) (*ChangeFlags, error) {
 
 	id, err := flags.GetInt(common.IdFlag)
 	if err != nil {
-		log.Println("change command: error while parsing flag: "+common.IdFlag, err)
+		logger.Log("change command: error while parsing flag: "+common.IdFlag, err)
 		return nil, common.ErrWrongFormattedIntFlag(common.IdFlag)
 	}
 	if id == 0 {
-		log.Println("change command: mandatory flag not provided: " + common.IdFlag)
+		logger.Log("change command: mandatory flag not provided: " + common.IdFlag)
 		return nil, common.ErrChangeCmdIdNotProvided
 	}
 
 	message, err := flags.GetString(common.AboutFlag)
 	if err != nil {
-		log.Println("change command: error while parsing flag: "+common.AboutFlag, err)
+		logger.Log("change command: error while parsing flag: "+common.AboutFlag, err)
 		return nil, common.ErrWrongFormattedStringFlag(common.AboutFlag)
 	}
 
 	t, err := flags.GetString(common.TimeFlag)
 	if err != nil {
-		log.Println("change command: error while parsing flag: "+common.TimeFlag, err)
+		logger.Log("change command: error while parsing flag: "+common.TimeFlag, err)
 		return nil, common.ErrWrongFormattedStringFlag(common.TimeFlag)
 	}
 
@@ -99,37 +99,37 @@ func parseChangeCmd(cmd *cobra.Command) (*ChangeFlags, error) {
 
 	// no changes provided
 	if message == "" && t == "" && !isPostpone {
-		log.Println("change command: no changes provided")
+		logger.Log("change command: no changes provided")
 		return nil, common.ErrChangeCmdInvalidFlagsProvided
 	}
 	// both "new time" and "postpone" provided
 	if t != "" && isPostpone {
-		log.Println("change command: both new time and postpone provided")
+		logger.Log("change command: both new time and postpone provided")
 		return nil, common.ErrChangeCmdInvalidTimeFlagsProvided
 	}
 
 	seconds, err := flags.GetInt(common.SecondsFlag)
 	if err != nil {
-		log.Println("change command: error while parsing flag: "+common.SecondsFlag, err)
+		logger.Log("change command: error while parsing flag: "+common.SecondsFlag, err)
 		return nil, common.ErrWrongFormattedIntFlag(common.SecondsFlag)
 	}
 	minutes, err := flags.GetInt(common.MinutesFlag)
 	if err != nil {
-		log.Println("change command: error while parsing flag: "+common.MinutesFlag, err)
+		logger.Log("change command: error while parsing flag: "+common.MinutesFlag, err)
 		return nil, common.ErrWrongFormattedIntFlag(common.MinutesFlag)
 	}
 	hours, err := flags.GetInt(common.HoursFlag)
 	if err != nil {
-		log.Println("change command: error while parsing flag: "+common.SecondsFlag, err)
+		logger.Log("change command: error while parsing flag: "+common.SecondsFlag, err)
 		return nil, common.ErrWrongFormattedIntFlag(common.HoursFlag)
 	}
 
 	if seconds < 0 || minutes < 0 || hours < 0 {
-		log.Println("change command: negative values provided for time shift flags")
+		logger.Log("change command: negative values provided for time shift flags")
 		return nil, common.ErrChangeCmdInvalidPostponeDuration
 	}
 	if isPostpone && seconds == 0 && minutes == 0 && hours == 0 {
-		log.Println("change command: no values provided for time shift flags")
+		logger.Log("change command: no values provided for time shift flags")
 		return nil, common.ErrChangeCmdPostponeDurationNotProvided
 	}
 

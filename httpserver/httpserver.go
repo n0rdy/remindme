@@ -3,11 +3,11 @@ package httpserver
 import (
 	"context"
 	"fmt"
-	"log"
 	"n0rdy.me/remindme/common"
 	"n0rdy.me/remindme/httpserver/api"
 	"n0rdy.me/remindme/httpserver/repo"
 	"n0rdy.me/remindme/httpserver/service"
+	"n0rdy.me/remindme/logger"
 	"n0rdy.me/remindme/utils"
 	"net/http"
 	"time"
@@ -16,11 +16,11 @@ import (
 func Start() {
 	port := "15555"
 
-	logsFile, err := utils.SetupLogger(common.ServerLogsFileName)
+	err := logger.SetupLogger(utils.GetOsSpecificLogsDir(), common.ServerLogsFileName)
 	if err != nil {
 		fmt.Println("setting up logger failed", err)
 	} else {
-		defer logsFile.Close()
+		defer logger.Close()
 	}
 
 	shutdownCh := make(chan struct{})
@@ -28,14 +28,14 @@ func Start() {
 	remindMeRouter := api.NewRemindMeRouter(&srv, shutdownCh)
 	httpRouter := remindMeRouter.NewRouter()
 
-	log.Println("http: starting server at port " + port)
+	logger.Log("http: starting server at port " + port)
 
 	server := &http.Server{Addr: ":" + port, Handler: httpRouter}
 	go func() {
 		err := server.ListenAndServe()
 		if err != nil {
 			close(shutdownCh)
-			log.Println(err)
+			logger.Log("server shutdown", err)
 		}
 	}()
 
@@ -49,7 +49,7 @@ func Start() {
 	}()
 
 	for range shutdownCh {
-		log.Println("server shutdown requested")
+		logger.Log("server shutdown requested")
 		err := server.Shutdown(context.Background())
 		if err != nil {
 			err := server.Close()

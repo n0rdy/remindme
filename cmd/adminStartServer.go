@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"log"
 	"n0rdy.me/remindme/httpserver"
+	"n0rdy.me/remindme/logger"
 
 	"github.com/spf13/cobra"
 )
@@ -15,7 +15,7 @@ var adminStartServerCmd = &cobra.Command{
 
 Use "start" command instead if you need to start the remindme app.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		log.Println("adminStartServer command: called")
+		logger.Log("adminStartServer command: called")
 		httpserver.Start()
 	},
 }

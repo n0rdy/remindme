@@ -3,9 +3,9 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	"log"
 	"n0rdy.me/remindme/common"
 	"n0rdy.me/remindme/httpclient"
+	"n0rdy.me/remindme/logger"
 	"n0rdy.me/remindme/utils"
 	"time"
 )
@@ -22,7 +22,7 @@ The command expects a reminder message to be provided via the "--about" flag - o
 
 List the upcoming reminders with the "list" command.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		log.Println("at command: called")
+		logger.Log("at command: called")
 
 		reminder, err := parseAtCmd(cmd)
 		if err != nil {
@@ -48,11 +48,11 @@ func parseAtCmd(cmd *cobra.Command) (*common.Reminder, error) {
 
 	message, err := flags.GetString(common.AboutFlag)
 	if err != nil {
-		log.Println("at command: error while parsing flag: "+common.AboutFlag, err)
+		logger.Log("at command: error while parsing flag: "+common.AboutFlag, err)
 		return nil, common.ErrWrongFormattedStringFlag(common.AboutFlag)
 	}
 	if message == "" {
-		log.Println("at command: mandatory flag not provided: " + common.AboutFlag)
+		logger.Log("at command: mandatory flag not provided: " + common.AboutFlag)
 		return nil, common.ErrInAtCmdNoMessageProvided
 	}
 
@@ -72,27 +72,27 @@ func calcRemindAtForAtFlag(flags *pflag.FlagSet) (time.Time, error) {
 
 	t, err := flags.GetString(common.TimeFlag)
 	if err != nil {
-		log.Println("at command: error while parsing flag: "+common.TimeFlag, err)
+		logger.Log("at command: error while parsing flag: "+common.TimeFlag, err)
 		return now, common.ErrWrongFormattedStringFlag(common.TimeFlag)
 	}
 	am, err := flags.GetString(common.AmFlag)
 	if err != nil {
-		log.Println("at command: error while parsing flag: "+common.AmFlag, err)
+		logger.Log("at command: error while parsing flag: "+common.AmFlag, err)
 		return now, common.ErrWrongFormattedStringFlag(common.AmFlag)
 	}
 	pm, err := flags.GetString(common.PmFlag)
 	if err != nil {
-		log.Println("at command: error while parsing flag: "+common.PmFlag, err)
+		logger.Log("at command: error while parsing flag: "+common.PmFlag, err)
 		return now, common.ErrWrongFormattedStringFlag(common.PmFlag)
 	}
 
 	if t == "" && am == "" && pm == "" {
-		log.Println("at command: no time flags provided")
+		logger.Log("at command: no time flags provided")
 		return now, common.ErrAtCmdTimeNotProvided
 	}
 	// more than 1 time-related flag is provided
 	if (t != "" && am != "") || (t != "" && pm != "") || (am != "" && pm != "") {
-		log.Println("at command: more than 1 time flag provided")
+		logger.Log("at command: more than 1 time flag provided")
 		return now, common.ErrAtCmdInvalidTimeflagsProvided
 	}
 

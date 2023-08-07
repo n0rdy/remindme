@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"log"
 	"n0rdy.me/remindme/httpclient"
+	"n0rdy.me/remindme/logger"
 )
 
 // stopCmd represents the stop command
@@ -18,7 +18,7 @@ and the notifications won't be sent.
 
 Start the remindme app with the "start" command.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		log.Println("stop command: called")
+		logger.Log("stop command: called")
 		return httpclient.StopServer()
 	},
 }

@@ -3,9 +3,9 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"log"
 	"n0rdy.me/remindme/common"
 	"n0rdy.me/remindme/httpclient"
+	"n0rdy.me/remindme/logger"
 	"os"
 	"sort"
 	"text/tabwriter"
@@ -31,7 +31,7 @@ This should be resolved in a matter of seconds.
 
 Cancel reminder with the "cancel --id ${REMINDER_ID}" command`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		log.Println("list command: called")
+		logger.Log("list command: called")
 
 		sortingFlags, err := resolveSorting(cmd)
 		if err != nil {
@@ -75,7 +75,7 @@ func resolveSorting(cmd *cobra.Command) (*SortingFlags, error) {
 
 	// sorting not requested (via --sort flag), but other sorting flags provided
 	if !shouldSort && (byId || byMessage || byTime || asc || desc) {
-		log.Println("list command: sorting not requested, but other sorting flags provided")
+		logger.Log("list command: sorting not requested, but other sorting flags provided")
 		return nil, common.ErrListCmdSortingNotRequested
 	}
 	// sorting not requested at all
@@ -84,12 +84,12 @@ func resolveSorting(cmd *cobra.Command) (*SortingFlags, error) {
 	}
 	// sorting by only 1 param is supported
 	if (byId && byMessage) || (byId && byTime) || (byMessage && byTime) {
-		log.Println("list command: provided more than 1 sorting flag")
+		logger.Log("list command: provided more than 1 sorting flag")
 		return nil, common.ErrListCmdSortingInvalidSortByFlagsProvided
 	}
 	// either ASC or DESC sorting order should be requested, not both
 	if asc && desc {
-		log.Println("list command: provided both ASC and DESC sorting flags")
+		logger.Log("list command: provided both ASC and DESC sorting flags")
 		return nil, common.ErrListCmdSortingInvalidSortingOrderFlagsProvided
 	}
 

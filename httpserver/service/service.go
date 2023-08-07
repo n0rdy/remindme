@@ -1,11 +1,11 @@
 package service
 
 import (
-	"log"
 	"n0rdy.me/remindme/common"
 	"n0rdy.me/remindme/httpserver/repo"
 	"n0rdy.me/remindme/httpserver/service/idresolver"
 	"n0rdy.me/remindme/httpserver/service/notification"
+	"n0rdy.me/remindme/logger"
 	"strconv"
 	"time"
 )
@@ -69,7 +69,7 @@ func (rs *ReminderService) Change(reminderId int, reminder common.Reminder) {
 
 // in case if the the reminder wasn't deleted (e.g. due to the error)
 func (rs *ReminderService) DeleteExpiredReminders() {
-	log.Println("deleteExpiredReminders job: invoked")
+	logger.Log("deleteExpiredReminders job: invoked")
 
 	now := time.Now()
 
@@ -79,14 +79,14 @@ func (rs *ReminderService) DeleteExpiredReminders() {
 		delete(rs.rmdIdToTimer, id)
 	}
 
-	log.Println("deleteExpiredReminders job: finished")
+	logger.Log("deleteExpiredReminders job: finished")
 }
 
 func (rs *ReminderService) setTimer(reminder common.Reminder) {
 	reminderTimer := time.AfterFunc(reminder.RemindAt.Sub(time.Now()), func() {
 		err := rs.notifier.Notify(reminder)
 		if err != nil {
-			log.Println("error happened on trying to send a notification for the reminder "+strconv.Itoa(reminder.ID), err)
+			logger.Log("error happened on trying to send a notification for the reminder "+strconv.Itoa(reminder.ID), err)
 		}
 		rs.repo.Delete(reminder.ID)
 		delete(rs.rmdIdToTimer, reminder.ID)

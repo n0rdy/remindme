@@ -11,7 +11,7 @@ var rootCmd = &cobra.Command{
 	Use:     "remindme",
 	Short:   "A tool to set reminders from the terminal",
 	Long:    `A tool to set reminders from the terminal.`,
-	Version: "1.0.1",
+	Version: "1.0.2",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/go-chi/chi/v5"
-	"log"
 	"n0rdy.me/remindme/common"
 	"n0rdy.me/remindme/httpserver/service"
+	"n0rdy.me/remindme/logger"
 	"net/http"
 	"strconv"
 )
@@ -41,21 +41,21 @@ func (rmr *RemindMeRouter) NewRouter() *chi.Mux {
 }
 
 func (rmr *RemindMeRouter) getAllReminders(w http.ResponseWriter, req *http.Request) {
-	log.Println("getAllReminders request: received")
+	logger.Log("getAllReminders request: received")
 
 	reminders := rmr.service.GetAll()
 	rmr.sendJsonResponse(w, http.StatusOK, reminders)
 
-	log.Println("getAllReminders request: successfully processed")
+	logger.Log("getAllReminders request: successfully processed")
 }
 
 func (rmr *RemindMeRouter) createNewReminder(w http.ResponseWriter, req *http.Request) {
-	log.Println("createNewReminder request: received")
+	logger.Log("createNewReminder request: received")
 
 	var reminder common.Reminder
 	err := json.NewDecoder(req.Body).Decode(&reminder)
 	if err != nil {
-		log.Println("createNewReminder request: unexpected error happened on request body decoding", err)
+		logger.Log("createNewReminder request: unexpected error happened on request body decoding", err)
 		rmr.sendErrorResponse(w, http.StatusBadRequest, common.ErrCodeRequestBody)
 		return
 	}
@@ -63,66 +63,66 @@ func (rmr *RemindMeRouter) createNewReminder(w http.ResponseWriter, req *http.Re
 	rmr.service.Set(reminder)
 	rmr.sendOkEmptyResponse(w)
 
-	log.Println("createNewReminder request: successfully processed")
+	logger.Log("createNewReminder request: successfully processed")
 }
 
 func (rmr *RemindMeRouter) deleteAllReminders(w http.ResponseWriter, req *http.Request) {
-	log.Println("deleteAllReminders request: received")
+	logger.Log("deleteAllReminders request: received")
 
 	rmr.service.CancelAll()
 	rmr.sendOkEmptyResponse(w)
 
-	log.Println("deleteAllReminders request: successfully processed")
+	logger.Log("deleteAllReminders request: successfully processed")
 }
 
 func (rmr *RemindMeRouter) getReminder(w http.ResponseWriter, req *http.Request) {
-	log.Println("getReminder request: received")
+	logger.Log("getReminder request: received")
 
 	id, err := rmr.getId(req)
 	if err != nil {
-		log.Println("getReminder request: error on parsing reminder ID from the URL param", err)
+		logger.Log("getReminder request: error on parsing reminder ID from the URL param", err)
 		rmr.sendErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	reminder := rmr.service.Get(id)
 	if reminder == nil {
-		log.Println("getReminder request: reminder not found by ID " + strconv.Itoa(id))
+		logger.Log("getReminder request: reminder not found by ID " + strconv.Itoa(id))
 		rmr.sendErrorResponse(w, http.StatusNotFound, common.ErrCodeReminderNotFound)
 		return
 	}
 	rmr.sendJsonResponse(w, http.StatusOK, *reminder)
 
-	log.Println("getReminder request: successfully processed")
+	logger.Log("getReminder request: successfully processed")
 }
 
 func (rmr *RemindMeRouter) deleteReminder(w http.ResponseWriter, req *http.Request) {
-	log.Println("deleteReminder request: received")
+	logger.Log("deleteReminder request: received")
 
 	id, err := rmr.getId(req)
 	if err != nil {
-		log.Println("deleteReminder request: error on parsing reminder ID from the URL param", err)
+		logger.Log("deleteReminder request: error on parsing reminder ID from the URL param", err)
 		rmr.sendErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	canceled := rmr.service.Cancel(id)
 	if !canceled {
-		log.Println("deleteReminder request: reminder not found by ID " + strconv.Itoa(id))
+		logger.Log("deleteReminder request: reminder not found by ID " + strconv.Itoa(id))
 		rmr.sendErrorResponse(w, http.StatusNotFound, common.ErrCodeReminderNotFound)
 		return
 	}
 	rmr.sendOkEmptyResponse(w)
 
-	log.Println("deleteReminder request: successfully processed")
+	logger.Log("deleteReminder request: successfully processed")
 }
 
 func (rmr *RemindMeRouter) changeReminder(w http.ResponseWriter, req *http.Request) {
-	log.Println("changeReminder request: received")
+	logger.Log("changeReminder request: received")
 
 	id, err := rmr.getId(req)
 	if err != nil {
-		log.Println("changeReminder request: error on parsing reminder ID from the URL param", err)
+		logger.Log("changeReminder request: error on parsing reminder ID from the URL param", err)
 		rmr.sendErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -130,7 +130,7 @@ func (rmr *RemindMeRouter) changeReminder(w http.ResponseWriter, req *http.Reque
 	var reminder common.Reminder
 	err = json.NewDecoder(req.Body).Decode(&reminder)
 	if err != nil {
-		log.Println("changeReminder request: unexpected error happened on request body decoding", err)
+		logger.Log("changeReminder request: unexpected error happened on request body decoding", err)
 		rmr.sendErrorResponse(w, http.StatusBadRequest, common.ErrCodeRequestBody)
 		return
 	}
@@ -138,24 +138,24 @@ func (rmr *RemindMeRouter) changeReminder(w http.ResponseWriter, req *http.Reque
 	rmr.service.Change(id, reminder)
 	rmr.sendOkEmptyResponse(w)
 
-	log.Println("changeReminder request: successfully processed")
+	logger.Log("changeReminder request: successfully processed")
 }
 
 func (rmr *RemindMeRouter) shutdown(w http.ResponseWriter, req *http.Request) {
-	log.Println("shutdown request: received")
+	logger.Log("shutdown request: received")
 
 	rmr.shutdownCh <- struct{}{}
 	rmr.sendOkEmptyResponse(w)
 
-	log.Println("shutdown request: successfully processed")
+	logger.Log("shutdown request: successfully processed")
 }
 
 func (rmr *RemindMeRouter) healthCheck(w http.ResponseWriter, req *http.Request) {
-	log.Println("healthCheck request: received")
+	logger.Log("healthCheck request: received")
 
 	rmr.sendJsonResponse(w, http.StatusOK, common.HealthcheckOk())
 
-	log.Println("healthCheck request: successfully processed")
+	logger.Log("healthCheck request: successfully processed")
 }
 
 func (rmr *RemindMeRouter) sendOkEmptyResponse(w http.ResponseWriter) {

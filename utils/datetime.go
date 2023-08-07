@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"log"
 	"n0rdy.me/remindme/common"
+	"n0rdy.me/remindme/logger"
 	"time"
 )
 
@@ -16,13 +16,13 @@ func TimeFrom24HoursString(timeAs24HoursString string) (time.Time, error) {
 
 	parsedTime, err := time.Parse(common.TimeFormat24Hours, timeAs24HoursString+":00")
 	if err != nil {
-		log.Println("error while parsing time in 24 hours string format: "+timeAs24HoursString, err)
+		logger.Log("error while parsing time in 24 hours string format: "+timeAs24HoursString, err)
 		return now, common.ErrCmdWrongFormatted24HoursTime
 	}
 
 	parsedTime = time.Date(now.Year(), now.Month(), now.Day(), parsedTime.Hour(), parsedTime.Minute(), parsedTime.Second(), 0, time.Local)
 	if parsedTime.Before(now) || parsedTime.Equal(now) {
-		log.Println("error while parsing time in 24 hours string format: " + timeAs24HoursString + " - time should be in future")
+		logger.Log("error while parsing time in 24 hours string format: " + timeAs24HoursString + " - time should be in future")
 		return now, common.ErrCmdTimeShouldBeInFuture
 	}
 
@@ -34,13 +34,13 @@ func TimeFrom12HoursAmPmString(timeAs12HoursAmPmString string, amOrPm string) (t
 
 	parsedTime, err := time.Parse(common.TimeFormat12AmPmHours, timeAs12HoursAmPmString+" "+amOrPm)
 	if err != nil {
-		log.Println("error while parsing time in 12 hours string format: "+timeAs12HoursAmPmString, err)
+		logger.Log("error while parsing time in 12 hours string format: "+timeAs12HoursAmPmString, err)
 		return now, common.ErrCmdWrongFormatted12HoursAmPmTime
 	}
 
 	parsedTime = time.Date(now.Year(), now.Month(), now.Day(), parsedTime.Hour(), parsedTime.Minute(), 0, 0, time.Local)
 	if parsedTime.Before(now) || parsedTime.Equal(now) {
-		log.Println("error while parsing time in 12 hours string format: " + timeAs12HoursAmPmString + " - time should be in future")
+		logger.Log("error while parsing time in 12 hours string format: " + timeAs12HoursAmPmString + " - time should be in future")
 		return now, common.ErrCmdTimeShouldBeInFuture
 	}
 

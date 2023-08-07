@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"log"
 	"n0rdy.me/remindme/common"
 	"n0rdy.me/remindme/httpclient"
+	"n0rdy.me/remindme/logger"
 	"os"
 	"os/exec"
 )
@@ -21,7 +21,7 @@ for sending the notifications once the requested time comes.
 
 Stop the remindme app with the "stop" command.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		log.Println("start command: called")
+		logger.Log("start command: called")
 
 		if httpclient.Healthcheck() {
 			return common.ErrStartCmdAlreadyRunning
@@ -31,7 +31,7 @@ Stop the remindme app with the "stop" command.`,
 		command.Stderr = os.Stderr
 
 		if err := command.Start(); err != nil {
-			log.Println("start command: error while starting HTTP server", err)
+			logger.Log("start command: error while starting HTTP server", err)
 			return err
 		}
 		return nil

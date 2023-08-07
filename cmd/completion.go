@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"log"
 	"n0rdy.me/remindme/common"
+	"n0rdy.me/remindme/logger"
 	"n0rdy.me/remindme/utils"
 	"os"
 )
@@ -21,7 +21,7 @@ source <(remindme completion)
 
 Please, check the PowerShell documentation (https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/register-argumentcompleter?view=powershell-7.3) for more information about loading completions for this shell type.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		log.Println("completion command: called")
+		logger.Log("completion command: called")
 		return setCompletionIfPossible()
 	},
 }
@@ -43,19 +43,19 @@ func setCompletionIfPossible() error {
 		case common.FishShell:
 			return rootCmd.GenZshCompletion(os.Stdout)
 		case "":
-			log.Println("completion command: unknown shell type error")
+			logger.Log("completion command: unknown shell type error")
 			return common.ErrCompletionCmdUnknownShell
 		default:
-			log.Println("completion command: unsupported shell type error: " + shellType)
+			logger.Log("completion command: unsupported shell type error: " + shellType)
 			return common.ErrCompletionCmdUnsupportedShell(shellType)
 		}
 	case common.WindowsOS:
 		return rootCmd.GenPowerShellCompletion(os.Stdout)
 	case "":
-		log.Println("completion command: unknown OS type error")
+		logger.Log("completion command: unknown OS type error")
 		return common.ErrCompletionCmdUnknownOS
 	default:
-		log.Println("completion command: unsupported OS type error: " + osType)
+		logger.Log("completion command: unsupported OS type error: " + osType)
 		return common.ErrCompletionCmdUnsupportedOs(osType)
 	}
 }

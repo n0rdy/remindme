@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"io"
-	"log"
 	"n0rdy.me/remindme/common"
+	"n0rdy.me/remindme/logger"
 	"n0rdy.me/remindme/utils"
 	"os"
 )
@@ -56,7 +56,7 @@ func parseLogsCmd(cmd *cobra.Command) (*LogsFlags, error) {
 	isServer := cmd.Flags().Lookup(common.ServerFlag).Changed
 
 	if isClient && isServer {
-		log.Println("logs command: both flags provided, only one is expected")
+		logger.Log("logs command: both flags provided, only one is expected")
 		return nil, common.ErrLogsCmdBothFlagsProvided
 	}
 	if !isClient && !isServer {
@@ -73,7 +73,7 @@ func printLogs(logsFileName string) error {
 
 	logsFile, err := os.Open(logsDir + logsFileName)
 	if err != nil {
-		log.Println("logs command: failed to open logs file", err)
+		logger.Log("logs command: failed to open logs file", err)
 		return common.ErrLogsCmdCannotOpenLogsFile
 	}
 	defer logsFile.Close()
@@ -87,7 +87,7 @@ func printLogs(logsFileName string) error {
 			if err == io.EOF {
 				break
 			}
-			log.Println("logs command: failed to read logs file", err)
+			logger.Log("logs command: failed to read logs file", err)
 			return err
 		}
 

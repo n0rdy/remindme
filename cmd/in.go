@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"github.com/spf13/pflag"
-	"log"
 	"n0rdy.me/remindme/common"
 	"n0rdy.me/remindme/httpclient"
+	"n0rdy.me/remindme/logger"
 	"n0rdy.me/remindme/utils"
 	"time"
 
@@ -24,7 +24,7 @@ The command expects a reminder message to be provided via the "--about" flag - o
 
 List the upcoming reminders with the "list" command.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		log.Println("in command: called")
+		logger.Log("in command: called")
 
 		reminder, err := parseInCmd(cmd)
 		if err != nil {
@@ -50,11 +50,11 @@ func parseInCmd(cmd *cobra.Command) (*common.Reminder, error) {
 
 	message, err := flags.GetString(common.AboutFlag)
 	if err != nil {
-		log.Println("in command: error while parsing flag: "+common.AboutFlag, err)
+		logger.Log("in command: error while parsing flag: "+common.AboutFlag, err)
 		return nil, common.ErrWrongFormattedStringFlag(common.AboutFlag)
 	}
 	if message == "" {
-		log.Println("in command: mandatory flag not provided: " + common.AboutFlag)
+		logger.Log("in command: mandatory flag not provided: " + common.AboutFlag)
 		return nil, common.ErrInAtCmdNoMessageProvided
 	}
 
@@ -74,26 +74,26 @@ func calcRemindAtForInFlag(flags *pflag.FlagSet) (time.Time, error) {
 
 	seconds, err := flags.GetInt(common.SecondsFlag)
 	if err != nil {
-		log.Println("in command: error while parsing flag: "+common.SecondsFlag, err)
+		logger.Log("in command: error while parsing flag: "+common.SecondsFlag, err)
 		return now, common.ErrWrongFormattedIntFlag(common.SecondsFlag)
 	}
 	minutes, err := flags.GetInt(common.MinutesFlag)
 	if err != nil {
-		log.Println("in command: error while parsing flag: "+common.MinutesFlag, err)
+		logger.Log("in command: error while parsing flag: "+common.MinutesFlag, err)
 		return now, common.ErrWrongFormattedIntFlag(common.MinutesFlag)
 	}
 	hours, err := flags.GetInt(common.HoursFlag)
 	if err != nil {
-		log.Println("in command: error while parsing flag: "+common.HoursFlag, err)
+		logger.Log("in command: error while parsing flag: "+common.HoursFlag, err)
 		return now, common.ErrWrongFormattedIntFlag(common.HoursFlag)
 	}
 
 	if seconds == 0 && minutes == 0 && hours == 0 {
-		log.Println("in command: no duration flags provided")
+		logger.Log("in command: no duration flags provided")
 		return now, common.ErrInCmdDurationNotProvided
 	}
 	if seconds < 0 || minutes < 0 || hours < 0 {
-		log.Println("in command: negative duration flags provided")
+		logger.Log("in command: negative duration flags provided")
 		return now, common.ErrInCmdInvalidDuration
 	}
 
