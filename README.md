@@ -164,6 +164,14 @@ where `1` is the ID of the reminder to be changed. The ID can be obtained by run
 remindme stop
 ```
 
+### Print logs
+- to print the logs, run the following command in the terminal:
+```shell
+remindme logs
+```
+It is possible to specify which logs to print: client or sever logs by using the `--client` or `--server` flags respectively.
+By default, client logs are printed.
+
 ### Help
 - to see the list of all available commands, run:
 ```shell

@@ -4,9 +4,8 @@ import (
 	"github.com/spf13/cobra"
 	"log"
 	"n0rdy.me/remindme/common"
+	"n0rdy.me/remindme/utils"
 	"os"
-	"runtime"
-	"strings"
 )
 
 // completionCmd represents the completion command
@@ -32,16 +31,16 @@ func init() {
 }
 
 func setCompletionIfPossible() error {
-	osType := runtime.GOOS
+	osType := utils.DetectOsType()
 	switch osType {
-	case "linux", "darwin":
-		shellType := detectShellType()
+	case common.LinuxOS, common.MacOS:
+		shellType := utils.DetectShellType()
 		switch shellType {
-		case "bash":
+		case common.BashShell:
 			return rootCmd.GenBashCompletion(os.Stdout)
-		case "zsh":
+		case common.ZshShell:
 			return rootCmd.GenZshCompletion(os.Stdout)
-		case "fish":
+		case common.FishShell:
 			return rootCmd.GenZshCompletion(os.Stdout)
 		case "":
 			log.Println("completion command: unknown shell type error")
@@ -50,7 +49,7 @@ func setCompletionIfPossible() error {
 			log.Println("completion command: unsupported shell type error: " + shellType)
 			return common.ErrCompletionCmdUnsupportedShell(shellType)
 		}
-	case "windows":
+	case common.WindowsOS:
 		return rootCmd.GenPowerShellCompletion(os.Stdout)
 	case "":
 		log.Println("completion command: unknown OS type error")
@@ -59,17 +58,4 @@ func setCompletionIfPossible() error {
 		log.Println("completion command: unsupported OS type error: " + osType)
 		return common.ErrCompletionCmdUnsupportedOs(osType)
 	}
-}
-
-func detectShellType() string {
-	shellTypeEnv := os.Getenv("SHELL")
-	if shellTypeEnv == "" {
-		return ""
-	}
-
-	shellPaths := strings.Split(shellTypeEnv, string(os.PathSeparator))
-	if len(shellPaths) == 0 {
-		return ""
-	}
-	return shellPaths[len(shellPaths)-1]
 }

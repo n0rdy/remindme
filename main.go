@@ -2,19 +2,18 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"n0rdy.me/remindme/cmd"
-	"os"
+	"n0rdy.me/remindme/common"
+	"n0rdy.me/remindme/utils"
 )
 
 func main() {
-	f, err := os.OpenFile("remindme_client_logs.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	logsFile, err := utils.SetupLogger(common.ClientLogsFileName)
 	if err != nil {
 		fmt.Println("setting up logger failed", err)
 	} else {
-		log.SetOutput(f)
+		defer logsFile.Close()
 	}
-	defer f.Close()
 
 	cmd.Execute()
 }

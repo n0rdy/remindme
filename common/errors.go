@@ -32,6 +32,8 @@ var (
 	ErrListCmdSortingInvalidSortByFlagsProvided       = errors.New("either --id, --message or --time flag should be provided, not both")
 	ErrListCmdSortingInvalidSortingOrderFlagsProvided = errors.New("either --asc or --desc flag should be provided, not both")
 	ErrListCmdSortingNotRequested                     = errors.New("--sort flag should be provided alongside the other sorting flags")
+	ErrLogsCmdBothFlagsProvided                       = errors.New("either --server or --client flag should be provided, not both")
+	ErrLogsCmdCannotOpenLogsFile                      = errors.New("can't open logs file")
 	ErrStartCmdAlreadyRunning                         = errors.New("the application is already running, please, run the desired command")
 
 	ErrCmdTimeShouldBeInFuture          = errors.New("provided time should be in future")

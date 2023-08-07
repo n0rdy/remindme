@@ -4,24 +4,24 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"n0rdy.me/remindme/common"
 	"n0rdy.me/remindme/httpserver/api"
 	"n0rdy.me/remindme/httpserver/repo"
 	"n0rdy.me/remindme/httpserver/service"
+	"n0rdy.me/remindme/utils"
 	"net/http"
-	"os"
 	"time"
 )
 
 func Start() {
 	port := "15555"
 
-	f, err := os.OpenFile("remindme_server_logs.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	logsFile, err := utils.SetupLogger(common.ServerLogsFileName)
 	if err != nil {
 		fmt.Println("setting up logger failed", err)
 	} else {
-		log.SetOutput(f)
+		defer logsFile.Close()
 	}
-	defer f.Close()
 
 	shutdownCh := make(chan struct{})
 	srv := service.NewReminderService(repo.NewImMemoryReminderRepo())
