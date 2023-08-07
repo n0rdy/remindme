@@ -31,7 +31,16 @@ func GetOsSpecificLogsDir() string {
 	case common.MacOS:
 		return "~/Library/Logs/remindme/"
 	case common.LinuxOS:
-		return "/var/log/remindme/"
+		// from XDG Base Directory Specification: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+		dataHome := os.Getenv("XDG_DATA_HOME")
+		if dataHome != "" {
+			if strings.HasSuffix(dataHome, "/") {
+				return dataHome + "remindme/"
+			} else {
+				return dataHome + "/remindme/"
+			}
+		}
+		return "$HOME/.local/share/remindme/"
 	case common.WindowsOS:
 		return "%LocalAppData%" + string(os.PathSeparator) + "remindme" + string(os.PathSeparator)
 	default:
