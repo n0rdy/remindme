@@ -18,7 +18,7 @@ and the notifications won't be sent.
 
 Start the remindme app with the "start" command.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		logger.Log("stop command: called")
+		logger.Info("stop command: called")
 		return httpclient.StopServer()
 	},
 }

@@ -17,17 +17,17 @@ var httpClient = http.Client{}
 func CreateReminder(reminder common.Reminder) error {
 	reqBody, err := json.Marshal(reminder)
 	if err != nil {
-		logger.Log("CreateReminder request: unexpected error happened on encoding request body", err)
+		logger.Error("CreateReminder request: unexpected error happened on encoding request body", err)
 		return common.ErrHttpInternal
 	}
 
 	resp, err := httpClient.Post(serverUrl+"/api/v1/reminders", "application/json", bytes.NewReader(reqBody))
 	if err != nil {
-		logger.Log("CreateReminder request: unexpected error happened on POST HTTP call", err)
+		logger.Error("CreateReminder request: unexpected error happened on POST HTTP call", err)
 		return common.ErrHttpOnCallingServer
 	}
 	if resp.StatusCode != http.StatusOK {
-		logger.Log("CreateReminder request: unexpected status code received: " + strconv.Itoa(resp.StatusCode))
+		logger.Error("CreateReminder request: unexpected status code received: " + strconv.Itoa(resp.StatusCode))
 		return common.ErrHttpOnSettingUpReminder
 	}
 	return nil
@@ -36,26 +36,26 @@ func CreateReminder(reminder common.Reminder) error {
 func GetAllReminders() ([]common.Reminder, error) {
 	resp, err := httpClient.Get(serverUrl + "/api/v1/reminders")
 	if err != nil {
-		logger.Log("GetAllReminders request: unexpected error happened on GET HTTP call", err)
+		logger.Error("GetAllReminders request: unexpected error happened on GET HTTP call", err)
 		return nil, common.ErrHttpOnCallingServer
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		logger.Log("GetAllReminders request: unexpected status code received: " + strconv.Itoa(resp.StatusCode))
+		logger.Error("GetAllReminders request: unexpected status code received: " + strconv.Itoa(resp.StatusCode))
 		return nil, common.ErrHttpOnGettingAllReminders
 	}
 
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
-		logger.Log("GetAllReminders request: unexpected error happened on response body reading", err)
+		logger.Error("GetAllReminders request: unexpected error happened on response body reading", err)
 		return nil, common.ErrHttpInternal
 	}
 
 	reminders := make([]common.Reminder, 0)
 	err = json.Unmarshal(respBody, &reminders)
 	if err != nil {
-		logger.Log("GetAllReminders request: unexpected error happened on response body decoding", err)
+		logger.Error("GetAllReminders request: unexpected error happened on response body decoding", err)
 		return nil, common.ErrHttpInternal
 	}
 	return reminders, err
@@ -64,17 +64,17 @@ func GetAllReminders() ([]common.Reminder, error) {
 func DeleteAllReminders() error {
 	req, err := http.NewRequest(http.MethodDelete, serverUrl+"/api/v1/reminders", nil)
 	if err != nil {
-		logger.Log("DeleteAllReminders request: unexpected error happened on preparing DELETE HTTP request", err)
+		logger.Error("DeleteAllReminders request: unexpected error happened on preparing DELETE HTTP request", err)
 		return common.ErrHttpInternal
 	}
 
 	resp, err := httpClient.Do(req)
 	if err != nil {
-		logger.Log("DeleteAllReminders request: unexpected error happened on DELETE HTTP call", err)
+		logger.Error("DeleteAllReminders request: unexpected error happened on DELETE HTTP call", err)
 		return common.ErrHttpOnCallingServer
 	}
 	if resp.StatusCode != http.StatusOK {
-		logger.Log("DeleteAllReminders request: unexpected status code received: " + strconv.Itoa(resp.StatusCode))
+		logger.Error("DeleteAllReminders request: unexpected status code received: " + strconv.Itoa(resp.StatusCode))
 		return common.ErrHttpOnDeletingAllReminders
 	}
 	return nil
@@ -83,30 +83,30 @@ func DeleteAllReminders() error {
 func GetReminder(id int) (*common.Reminder, error) {
 	resp, err := httpClient.Get(serverUrl + "/api/v1/reminders/" + strconv.Itoa(id))
 	if err != nil {
-		logger.Log("GetReminder request: unexpected error happened on GET HTTP call", err)
+		logger.Error("GetReminder request: unexpected error happened on GET HTTP call", err)
 		return nil, common.ErrHttpOnCallingServer
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusNotFound {
-		logger.Log("GetReminder request: reminder not found by ID: "+strconv.Itoa(id), err)
+		logger.Error("GetReminder request: reminder not found by ID: "+strconv.Itoa(id), err)
 		return nil, common.ErrHttpReminderNotFound
 	}
 	if resp.StatusCode != http.StatusOK {
-		logger.Log("GetReminder request: unexpected status code received: " + strconv.Itoa(resp.StatusCode))
+		logger.Error("GetReminder request: unexpected status code received: " + strconv.Itoa(resp.StatusCode))
 		return nil, common.ErrHttpOnGettingReminderById
 	}
 
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
-		logger.Log("GetReminder request: unexpected error happened on response body reading", err)
+		logger.Error("GetReminder request: unexpected error happened on response body reading", err)
 		return nil, common.ErrHttpInternal
 	}
 
 	reminder := common.Reminder{}
 	err = json.Unmarshal(respBody, &reminder)
 	if err != nil {
-		logger.Log("GetReminder request: unexpected error happened on response body decoding", err)
+		logger.Error("GetReminder request: unexpected error happened on response body decoding", err)
 		return nil, common.ErrHttpInternal
 	}
 	return &reminder, err
@@ -115,21 +115,21 @@ func GetReminder(id int) (*common.Reminder, error) {
 func DeleteReminder(id int) error {
 	req, err := http.NewRequest(http.MethodDelete, serverUrl+"/api/v1/reminders/"+strconv.Itoa(id), nil)
 	if err != nil {
-		logger.Log("DeleteReminder request: unexpected error happened on preparing DELETE HTTP request", err)
+		logger.Error("DeleteReminder request: unexpected error happened on preparing DELETE HTTP request", err)
 		return common.ErrHttpInternal
 	}
 
 	resp, err := httpClient.Do(req)
 	if err != nil {
-		logger.Log("DeleteReminder request: unexpected error happened on DELETE HTTP call", err)
+		logger.Error("DeleteReminder request: unexpected error happened on DELETE HTTP call", err)
 		return common.ErrHttpOnCallingServer
 	}
 	if resp.StatusCode == http.StatusNotFound {
-		logger.Log("DeleteReminder request: reminder not found by ID: "+strconv.Itoa(id), err)
+		logger.Error("DeleteReminder request: reminder not found by ID: "+strconv.Itoa(id), err)
 		return common.ErrHttpReminderNotFound
 	}
 	if resp.StatusCode != http.StatusOK {
-		logger.Log("DeleteReminder request: unexpected status code received: " + strconv.Itoa(resp.StatusCode))
+		logger.Error("DeleteReminder request: unexpected status code received: " + strconv.Itoa(resp.StatusCode))
 		return common.ErrHttpOnDeletingReminder
 	}
 	return nil
@@ -138,23 +138,23 @@ func DeleteReminder(id int) error {
 func ChangeReminder(id int, reminderModifications common.Reminder) error {
 	reqBody, err := json.Marshal(reminderModifications)
 	if err != nil {
-		logger.Log("ChangeReminder request: unexpected error happened on encoding request body", err)
+		logger.Error("ChangeReminder request: unexpected error happened on encoding request body", err)
 		return common.ErrHttpInternal
 	}
 
 	req, err := http.NewRequest(http.MethodPut, serverUrl+"/api/v1/reminders/"+strconv.Itoa(id), bytes.NewReader(reqBody))
 	if err != nil {
-		logger.Log("ChangeReminder request: unexpected error happened on preparing PUT HTTP request", err)
+		logger.Error("ChangeReminder request: unexpected error happened on preparing PUT HTTP request", err)
 		return common.ErrHttpInternal
 	}
 
 	resp, err := httpClient.Do(req)
 	if err != nil {
-		logger.Log("ChangeReminder request: unexpected error happened on PUT HTTP call", err)
+		logger.Error("ChangeReminder request: unexpected error happened on PUT HTTP call", err)
 		return common.ErrHttpOnCallingServer
 	}
 	if resp.StatusCode != http.StatusOK {
-		logger.Log("ChangeReminder request: unexpected status code received: " + strconv.Itoa(resp.StatusCode))
+		logger.Error("ChangeReminder request: unexpected status code received: " + strconv.Itoa(resp.StatusCode))
 		return common.ErrHttpOnChangingReminder
 	}
 	return nil
@@ -163,7 +163,7 @@ func ChangeReminder(id int, reminderModifications common.Reminder) error {
 func Healthcheck() bool {
 	resp, err := httpClient.Get(serverUrl + "/healthcheck")
 	if err != nil {
-		logger.Log("Healthcheck request: unexpected error happened on GET HTTP call", err)
+		logger.Error("Healthcheck request: unexpected error happened on GET HTTP call", err)
 		return false
 	}
 	defer resp.Body.Close()
@@ -174,17 +174,17 @@ func Healthcheck() bool {
 func StopServer() error {
 	req, err := http.NewRequest(http.MethodDelete, serverUrl+"/shutdown", nil)
 	if err != nil {
-		logger.Log("StopServer request: unexpected error happened on preparing DELETE HTTP request", err)
+		logger.Error("StopServer request: unexpected error happened on preparing DELETE HTTP request", err)
 		return common.ErrHttpInternal
 	}
 
 	resp, err := httpClient.Do(req)
 	if err != nil {
-		logger.Log("StopServer request: unexpected error happened on DELETE HTTP call", err)
+		logger.Error("StopServer request: unexpected error happened on DELETE HTTP call", err)
 		return common.ErrHttpOnCallingServer
 	}
 	if resp.StatusCode != http.StatusOK {
-		logger.Log("StopServer request: unexpected status code received: " + strconv.Itoa(resp.StatusCode))
+		logger.Error("StopServer request: unexpected status code received: " + strconv.Itoa(resp.StatusCode))
 		return common.ErrHttpOnTerminatingApp
 	}
 	return nil

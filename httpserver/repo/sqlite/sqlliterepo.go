@@ -22,7 +22,7 @@ func NewSqliteReminderRepo() (repo.ReminderRepo, error) {
 		return nil, err
 	}
 
-	logger.Log("SQLite DB started")
+	logger.Info("SQLite DB started")
 
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS reminders (
@@ -36,7 +36,7 @@ func NewSqliteReminderRepo() (repo.ReminderRepo, error) {
 		return nil, err
 	}
 
-	logger.Log("SQLite DB schema created")
+	logger.Info("SQLite DB schema created")
 
 	return &sqliteReminderRepo{db: db}, nil
 }

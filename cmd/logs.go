@@ -28,6 +28,8 @@ If both flags are provided, the error message is printed.
 
 If the remindme app didn't manage to find the logs file, nothing is printed.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
+		logger.Info("logs command: called")
+
 		flags, err := parseLogsCmd(cmd)
 		if err != nil {
 			return err
@@ -56,7 +58,7 @@ func parseLogsCmd(cmd *cobra.Command) (*LogsFlags, error) {
 	isServer := cmd.Flags().Lookup(common.ServerFlag).Changed
 
 	if isClient && isServer {
-		logger.Log("logs command: both flags provided, only one is expected")
+		logger.Error("logs command: both flags provided, only one is expected")
 		return nil, common.ErrLogsCmdBothFlagsProvided
 	}
 	if !isClient && !isServer {
@@ -73,7 +75,7 @@ func printLogs(logsFileName string) error {
 
 	logsFile, err := os.Open(logsDir + logsFileName)
 	if err != nil {
-		logger.Log("logs command: failed to open logs file", err)
+		logger.Error("logs command: failed to open logs file", err)
 		return common.ErrLogsCmdCannotOpenLogsFile
 	}
 	defer logsFile.Close()
@@ -87,7 +89,7 @@ func printLogs(logsFileName string) error {
 			if err == io.EOF {
 				break
 			}
-			logger.Log("logs command: failed to read logs file", err)
+			logger.Error("logs command: failed to read logs file", err)
 			return err
 		}
 

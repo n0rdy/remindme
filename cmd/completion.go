@@ -21,7 +21,7 @@ source <(remindme completion)
 
 Please, check the PowerShell documentation (https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/register-argumentcompleter?view=powershell-7.3) for more information about loading completions for this shell type.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		logger.Log("completion command: called")
+		logger.Info("completion command: called")
 		return setCompletionIfPossible()
 	},
 }
@@ -43,19 +43,19 @@ func setCompletionIfPossible() error {
 		case common.FishShell:
 			return rootCmd.GenZshCompletion(os.Stdout)
 		case "":
-			logger.Log("completion command: unknown shell type error")
+			logger.Error("completion command: unknown shell type error")
 			return common.ErrCompletionCmdUnknownShell
 		default:
-			logger.Log("completion command: unsupported shell type error: " + shellType)
+			logger.Error("completion command: unsupported shell type error: " + shellType)
 			return common.ErrCompletionCmdUnsupportedShell(shellType)
 		}
 	case common.WindowsOS:
 		return rootCmd.GenPowerShellCompletion(os.Stdout)
 	case "":
-		logger.Log("completion command: unknown OS type error")
+		logger.Error("completion command: unknown OS type error")
 		return common.ErrCompletionCmdUnknownOS
 	default:
-		logger.Log("completion command: unsupported OS type error: " + osType)
+		logger.Error("completion command: unsupported OS type error: " + osType)
 		return common.ErrCompletionCmdUnsupportedOs(osType)
 	}
 }

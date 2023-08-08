@@ -22,7 +22,7 @@ The command expects a reminder ID to be provided via the "--id" flag - otherwise
 
 List the upcoming reminders with the "list" command.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		logger.Log("cancel command: called")
+		logger.Info("cancel command: called")
 
 		cancelFlags, err := parseCancelCmd(cmd)
 		if err != nil {
@@ -49,13 +49,13 @@ func parseCancelCmd(cmd *cobra.Command) (*CancelFlags, error) {
 	isAll := flags.Lookup(common.AllFlag).Changed
 	id, err := flags.GetInt(common.IdFlag)
 	if err != nil {
-		logger.Log("cancel command: error while parsing flag: "+common.IdFlag, err)
+		logger.Error("cancel command: error while parsing flag: "+common.IdFlag, err)
 		return nil, common.ErrWrongFormattedIntFlag(common.IdFlag)
 	}
 
 	// catches "no flags provided" and "all flags provided" cases
 	if (id == 0 && !isAll) || (id != 0 && isAll) {
-		logger.Log("cancel command: invalid flags provided")
+		logger.Error("cancel command: invalid flags provided")
 		return nil, common.ErrCancelCmdInvalidFlagsProvided
 	}
 

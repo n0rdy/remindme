@@ -5,6 +5,11 @@ import (
 	"os"
 )
 
+const (
+	infoLogLevelPrefix  = "[INFO] "
+	errorLogLevelPrefix = "[ERROR] "
+)
+
 var isLoggerSetUp bool
 var fileWithLogs *os.File
 
@@ -28,9 +33,15 @@ func SetupLogger(logsDir string, logsFile string) error {
 	return nil
 }
 
-func Log(message string, err ...error) {
+func Info(message string) {
 	if isLoggerSetUp {
-		log.Println(message, err)
+		log.Println(infoLogLevelPrefix + message)
+	}
+}
+
+func Error(message string, err ...error) {
+	if isLoggerSetUp {
+		log.Println(errorLogLevelPrefix+message, err)
 	}
 }
 

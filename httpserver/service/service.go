@@ -96,7 +96,7 @@ func (rs *ReminderService) DeleteExpiredReminders() error {
 		delete(rs.rmdIdToTimer, id)
 	}
 
-	logger.Log("deleteExpiredReminders job: finished")
+	logger.Info("deleteExpiredReminders job: finished")
 	return nil
 }
 
@@ -110,7 +110,7 @@ func (rs *ReminderService) RestoreActiveReminders() error {
 		rs.setTimer(reminder)
 	}
 
-	logger.Log("restoreActiveReminders job: finished")
+	logger.Info("restoreActiveReminders job: finished")
 	return nil
 }
 
@@ -118,11 +118,11 @@ func (rs *ReminderService) setTimer(reminder common.Reminder) {
 	reminderTimer := time.AfterFunc(reminder.RemindAt.Sub(time.Now()), func() {
 		err := rs.notifier.Notify(reminder)
 		if err != nil {
-			logger.Log("error happened on trying to send a notification for the reminder "+strconv.Itoa(reminder.ID), err)
+			logger.Error("error happened on trying to send a notification for the reminder "+strconv.Itoa(reminder.ID), err)
 		}
 		err = rs.repo.Delete(reminder.ID)
 		if err != nil {
-			logger.Log("error happened on trying to delete the reminder from the DB: "+strconv.Itoa(reminder.ID), err)
+			logger.Error("error happened on trying to delete the reminder from the DB: "+strconv.Itoa(reminder.ID), err)
 		}
 		delete(rs.rmdIdToTimer, reminder.ID)
 	})

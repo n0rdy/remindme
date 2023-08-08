@@ -15,7 +15,7 @@ var adminStartServerCmd = &cobra.Command{
 
 Use "start" command instead if you need to start the remindme app.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		logger.Log("adminStartServer command: called")
+		logger.Info("adminStartServer command: called")
 		httpserver.Start()
 	},
 }

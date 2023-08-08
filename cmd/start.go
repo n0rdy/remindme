@@ -21,7 +21,7 @@ for sending the notifications once the requested time comes.
 
 Stop the remindme app with the "stop" command.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		logger.Log("start command: called")
+		logger.Info("start command: called")
 
 		if httpclient.Healthcheck() {
 			return common.ErrStartCmdAlreadyRunning
@@ -31,7 +31,7 @@ Stop the remindme app with the "stop" command.`,
 		command.Stderr = os.Stderr
 
 		if err := command.Start(); err != nil {
-			logger.Log("start command: error while starting HTTP server", err)
+			logger.Error("start command: error while starting HTTP server", err)
 			return err
 		}
 		return nil

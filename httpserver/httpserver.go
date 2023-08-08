@@ -2,6 +2,7 @@ package httpserver
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"n0rdy.me/remindme/common"
 	"n0rdy.me/remindme/httpserver/api"
@@ -28,7 +29,7 @@ func Start() {
 
 	reminderRepo, err := sqlite.NewSqliteReminderRepo()
 	if err != nil {
-		logger.Log("failed to create SQLite repo - falling back to the in-memory repo", err)
+		logger.Error("failed to create SQLite repo - falling back to the in-memory repo", err)
 		reminderRepo = inmemory.NewImMemoryReminderRepo()
 	}
 
@@ -36,14 +37,18 @@ func Start() {
 	remindMeRouter := api.NewRemindMeRouter(&srv, shutdownCh)
 	httpRouter := remindMeRouter.NewRouter()
 
-	logger.Log("http: starting server at port " + port)
+	logger.Info("http: starting server at port " + port)
 
 	server := &http.Server{Addr: ":" + port, Handler: httpRouter}
 	go func() {
 		err := server.ListenAndServe()
 		if err != nil {
 			close(shutdownCh)
-			logger.Log("server shutdown", err)
+			if errors.Is(err, http.ErrServerClosed) {
+				logger.Info("server shutdown")
+			} else {
+				logger.Error("server failed", err)
+			}
 		}
 	}()
 
@@ -52,7 +57,7 @@ func Start() {
 	// job to delete expired reminders if any
 	go func() {
 		for range ticker.C {
-			logger.Log("deleteExpiredReminders job: invoked")
+			logger.Info("deleteExpiredReminders job: invoked")
 			srv.DeleteExpiredReminders()
 		}
 	}()
@@ -64,7 +69,7 @@ func Start() {
 	srv.RestoreActiveReminders()
 
 	for range shutdownCh {
-		logger.Log("server shutdown requested")
+		logger.Info("server shutdown requested")
 		err := server.Shutdown(context.Background())
 		if err != nil {
 			err := server.Close()
