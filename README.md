@@ -3,9 +3,12 @@
 ## Description
 Hello there!
 
-This is a simple terminal reminder app. It allows you to add, delete, and view reminders. Reminders are stored in-memory and are not persistent.
-
 The idea behind this app is to use it for short-term reminders, e.g. to remind you to do something in 2 hours or in 10 minutes.
+The reminders are set in terminal, and the app will notify you about the reminder via OS-specific reminders.
+
+Reminders are stored in SQLite database, so they will persist even if the app is stopped and started again.
+However, if there is an issue with the SQLite setup, the app will still work, but the reminders will be stored in memory and will be lost after the app is stopped.
+SQLite is bundled with the app, so there is no need to install it separately.
 
 The flow of the app is as follows:
 ![](https://github.com/n0rdy/remindme/blob/master/docs/flow.gif)

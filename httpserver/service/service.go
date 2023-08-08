@@ -3,7 +3,6 @@ package service
 import (
 	"n0rdy.me/remindme/common"
 	"n0rdy.me/remindme/httpserver/repo"
-	"n0rdy.me/remindme/httpserver/service/idresolver"
 	"n0rdy.me/remindme/httpserver/service/notification"
 	"n0rdy.me/remindme/logger"
 	"strconv"
@@ -11,42 +10,54 @@ import (
 )
 
 type ReminderService struct {
-	idResolver   idresolver.IdResolver
 	repo         repo.ReminderRepo
 	notifier     notification.Notifier
 	rmdIdToTimer map[int]*time.Timer
 }
 
-func (rs *ReminderService) GetAll() []common.Reminder {
+func (rs *ReminderService) GetAll() ([]common.Reminder, error) {
 	return rs.repo.List()
 }
 
-func (rs *ReminderService) Get(id int) *common.Reminder {
+func (rs *ReminderService) Get(id int) (*common.Reminder, error) {
 	return rs.repo.Get(id)
 }
 
-func (rs *ReminderService) Set(reminder common.Reminder) {
-	reminder.ID = rs.idResolver.Next()
-
-	rs.repo.Add(reminder)
+func (rs *ReminderService) Set(reminder common.Reminder) error {
+	err := rs.repo.Add(reminder)
+	if err != nil {
+		return err
+	}
 	rs.setTimer(reminder)
+	return nil
 }
 
-func (rs *ReminderService) CancelAll() {
-	rs.repo.DeleteAll()
+func (rs *ReminderService) CancelAll() error {
+	err := rs.repo.DeleteAll()
+	if err != nil {
+		return err
+	}
 
 	for _, timer := range rs.rmdIdToTimer {
 		timer.Stop()
 	}
 	rs.rmdIdToTimer = make(map[int]*time.Timer, 0)
+	return nil
 }
 
-func (rs *ReminderService) Cancel(reminderId int) bool {
-	if !rs.repo.Exists(reminderId) {
-		return false
+func (rs *ReminderService) Cancel(reminderId int) (bool, error) {
+	exists, err := rs.repo.Exists(reminderId)
+	if err != nil {
+		return false, err
+	}
+	if !exists {
+		return false, nil
 	}
 
-	rs.repo.Delete(reminderId)
+	err = rs.repo.Delete(reminderId)
+	if err != nil {
+		return false, err
+	}
 
 	var stopped = false
 	if timer, found := rs.rmdIdToTimer[reminderId]; found {
@@ -54,32 +65,53 @@ func (rs *ReminderService) Cancel(reminderId int) bool {
 	}
 	delete(rs.rmdIdToTimer, reminderId)
 
-	return stopped
+	return stopped, nil
 }
 
-func (rs *ReminderService) Change(reminderId int, reminder common.Reminder) {
+func (rs *ReminderService) Change(reminderId int, reminder common.Reminder) error {
 	reminder.ID = reminderId
-	rs.repo.Update(reminder)
+	err := rs.repo.Update(reminder)
+	if err != nil {
+		return err
+	}
 
 	if timer, found := rs.rmdIdToTimer[reminderId]; found {
 		timer.Stop()
 	}
 	rs.setTimer(reminder)
+	return nil
 }
 
-// in case if the the reminder wasn't deleted (e.g. due to the error)
-func (rs *ReminderService) DeleteExpiredReminders() {
-	logger.Log("deleteExpiredReminders job: invoked")
-
+// in case if the the reminder wasn't deleted (e.g. due to the error or app being offline)
+func (rs *ReminderService) DeleteExpiredReminders() error {
 	now := time.Now()
 
-	deletedIds := rs.repo.DeleteAllWithRemindAtBefore(now)
+	deletedIds, err := rs.repo.DeleteAllWithRemindAtBefore(now)
+	if err != nil {
+		return err
+	}
+
 	for _, id := range deletedIds {
 		rs.rmdIdToTimer[id].Stop()
 		delete(rs.rmdIdToTimer, id)
 	}
 
 	logger.Log("deleteExpiredReminders job: finished")
+	return nil
+}
+
+func (rs *ReminderService) RestoreActiveReminders() error {
+	reminders, err := rs.repo.GetRemindersAfter(time.Now())
+	if err != nil {
+		return err
+	}
+
+	for _, reminder := range reminders {
+		rs.setTimer(reminder)
+	}
+
+	logger.Log("restoreActiveReminders job: finished")
+	return nil
 }
 
 func (rs *ReminderService) setTimer(reminder common.Reminder) {
@@ -88,7 +120,10 @@ func (rs *ReminderService) setTimer(reminder common.Reminder) {
 		if err != nil {
 			logger.Log("error happened on trying to send a notification for the reminder "+strconv.Itoa(reminder.ID), err)
 		}
-		rs.repo.Delete(reminder.ID)
+		err = rs.repo.Delete(reminder.ID)
+		if err != nil {
+			logger.Log("error happened on trying to delete the reminder from the DB: "+strconv.Itoa(reminder.ID), err)
+		}
 		delete(rs.rmdIdToTimer, reminder.ID)
 	})
 
@@ -97,7 +132,6 @@ func (rs *ReminderService) setTimer(reminder common.Reminder) {
 
 func NewReminderService(repo repo.ReminderRepo) ReminderService {
 	return ReminderService{
-		idResolver:   idresolver.NewIdResolver(),
 		repo:         repo,
 		notifier:     notification.NewNotifier(),
 		rmdIdToTimer: make(map[int]*time.Timer),

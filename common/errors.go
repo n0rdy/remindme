@@ -50,14 +50,15 @@ var (
 	ErrHttpOnSettingUpReminder    = errors.New("error on setting up the reminder")
 	ErrHttpOnTerminatingApp       = errors.New("error on terminating the app")
 
-	ErrHttpReminderNotFound = errors.New("reminder not found with the provided ID")
 	ErrHttpInternal         = errors.New("internal error")
+	ErrHttpReminderNotFound = errors.New("reminder not found with the provided ID")
 
 	// HTTP server errors:
-	ErrCodeResponseMarshaling    = "internal.response_marshaling"
-	ErrCodeRequestBody           = "bad_request.request_body"
 	ErrCodeReminderIdWrongFormat = "bad_request.reminder_id"
 	ErrCodeReminderNotFound      = "not_found.reminder"
+	ErrCodeDbQuerying            = "internal.db"
+	ErrCodeRequestBody           = "bad_request.request_body"
+	ErrCodeResponseMarshaling    = "internal.response_marshaling"
 )
 
 func ErrWrongFormattedStringFlag(flagName string) error {
