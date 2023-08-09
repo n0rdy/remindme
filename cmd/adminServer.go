@@ -9,7 +9,7 @@ import (
 
 // adminStartServerCmd represents the adminStartServer command
 var adminStartServerCmd = &cobra.Command{
-	Use:   "adminStartServer",
+	Use:   "server",
 	Short: "To be run by the app to start the server: please, don't run it on your own, it might crash the app",
 	Long: `WARNING: To be run by the app to start the server: please, don't run it on your own, it might crash the app.
 
@@ -21,5 +21,5 @@ Use "start" command instead if you need to start the remindme app.`,
 }
 
 func init() {
-	rootCmd.AddCommand(adminStartServerCmd)
+	adminCmd.AddCommand(adminStartServerCmd)
 }

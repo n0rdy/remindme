@@ -14,6 +14,9 @@ const (
 
 var (
 	// cmd errors:
+	ErrAdminLogsCmdBothFlagsProvided                  = errors.New("either --server or --client flag should be provided, not both")
+	ErrAdminLogsCmdCannotOpenLogsFile                 = errors.New("can't open logs file")
+	ErrAdminLogsCmdCannotDeleteLogsFile               = errors.New("can't delete logs file")
 	ErrAtCmdTimeNotProvided                           = errors.New("time should be provided for `at` command: use either `--time` flag with corresponding text time in 24-hours HH:MM format (e.g. `16:30`, `07:45`, `00:00`), or --am/--pm flags with corresponding text time in A.M./P.M. 12-hours HH:MM format")
 	ErrAtCmdInvalidTimeflagsProvided                  = errors.New("time should be provided for `at` command: use either `--time`, --am or --pm flag, not both")
 	ErrCancelCmdInvalidFlagsProvided                  = errors.New("either reminder ID or `--all` flag should be provided for `cancel` command: use `--id` flag with corresponding text ID or `--all` flag with no value")
@@ -32,8 +35,6 @@ var (
 	ErrListCmdSortingInvalidSortByFlagsProvided       = errors.New("either --id, --message or --time flag should be provided, not both")
 	ErrListCmdSortingInvalidSortingOrderFlagsProvided = errors.New("either --asc or --desc flag should be provided, not both")
 	ErrListCmdSortingNotRequested                     = errors.New("--sort flag should be provided alongside the other sorting flags")
-	ErrLogsCmdBothFlagsProvided                       = errors.New("either --server or --client flag should be provided, not both")
-	ErrLogsCmdCannotOpenLogsFile                      = errors.New("can't open logs file")
 	ErrStartCmdAlreadyRunning                         = errors.New("the application is already running, please, run the desired command")
 
 	ErrCmdTimeShouldBeInFuture          = errors.New("provided time should be in future")

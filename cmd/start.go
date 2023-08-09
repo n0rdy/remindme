@@ -27,7 +27,7 @@ Stop the remindme app with the "stop" command.`,
 			return common.ErrStartCmdAlreadyRunning
 		}
 
-		command := exec.Command(resolveExecBinary(), "adminStartServer")
+		command := exec.Command(resolveExecBinary(), "admin", "server")
 		command.Stderr = os.Stderr
 
 		if err := command.Start(); err != nil {

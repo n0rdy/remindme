@@ -87,6 +87,7 @@ To start the app, run the following command in the terminal:
 ```shell
 remindme start
 ```
+Under the hood, the HTTP server is started on port 15555.
 
 ### Adding a reminder
 There are several ways to add a reminder:
@@ -167,13 +168,22 @@ where `1` is the ID of the reminder to be changed. The ID can be obtained by run
 remindme stop
 ```
 
-### Print logs
+### Logs
+#### Printing logs
 - to print the logs, run the following command in the terminal:
 ```shell
-remindme logs
+remindme admin logs print
 ```
-It is possible to specify which logs to print: client or sever logs by using the `--client` or `--server` flags respectively.
+It is possible to specify which logs to print: client or server logs by using the `--client` or `--server` flags respectively.
 By default, client logs are printed.
+
+#### Deleting log files
+- to delete the log files, run the following command in the terminal:
+```shell
+remindme admin logs delete
+```
+It is possible to specify which log file to delete: client or server logs by using the `--client` or `--server` flags respectively.
+By default, both client and server log files are deleted.
 
 ### Help
 - to see the list of all available commands, run:

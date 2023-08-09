@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
 	"io"
@@ -11,14 +12,14 @@ import (
 	"os"
 )
 
-type LogsFlags struct {
+type AdminLogsPrintFlags struct {
 	IsClient bool
 	IsServer bool
 }
 
-// logsCmd represents the logs command
-var logsCmd = &cobra.Command{
-	Use:   "logs",
+// adminLogsPrintCmd represents the print command
+var adminLogsPrintCmd = &cobra.Command{
+	Use:   "print",
 	Short: "Print logs to the terminal output",
 	Long: `Print logs to the terminal output.
 
@@ -28,18 +29,18 @@ If both flags are provided, the error message is printed.
 
 If the remindme app didn't manage to find the logs file, nothing is printed.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		logger.Info("logs command: called")
+		logger.Info("admin logs print command: called")
 
-		flags, err := parseLogsCmd(cmd)
+		flags, err := parseAdminLogsPrintCmd(cmd)
 		if err != nil {
 			return err
 		}
 
 		var logsFileName string
-		if flags.IsClient {
-			logsFileName = common.ClientLogsFileName
-		} else {
+		if flags.IsServer {
 			logsFileName = common.ServerLogsFileName
+		} else {
+			logsFileName = common.ClientLogsFileName
 		}
 
 		return printLogs(logsFileName)
@@ -47,27 +48,7 @@ If the remindme app didn't manage to find the logs file, nothing is printed.`,
 }
 
 func init() {
-	rootCmd.AddCommand(logsCmd)
-
-	logsCmd.Flags().BoolP(common.ClientFlag, "c", true, "Request client logs to be printed")
-	logsCmd.Flags().BoolP(common.ServerFlag, "s", false, "Request server logs to be printed")
-}
-
-func parseLogsCmd(cmd *cobra.Command) (*LogsFlags, error) {
-	isClient := cmd.Flags().Lookup(common.ClientFlag).Changed
-	isServer := cmd.Flags().Lookup(common.ServerFlag).Changed
-
-	if isClient && isServer {
-		logger.Error("logs command: both flags provided, only one is expected")
-		return nil, common.ErrLogsCmdBothFlagsProvided
-	}
-	if !isClient && !isServer {
-		isClient = true
-	}
-	return &LogsFlags{
-		IsClient: isClient,
-		IsServer: isServer,
-	}, nil
+	adminLogsCmd.AddCommand(adminLogsPrintCmd)
 }
 
 func printLogs(logsFileName string) error {
@@ -75,8 +56,11 @@ func printLogs(logsFileName string) error {
 
 	logsFile, err := os.Open(logsDir + logsFileName)
 	if err != nil {
-		logger.Error("logs command: failed to open logs file", err)
-		return common.ErrLogsCmdCannotOpenLogsFile
+		if errors.Is(err, os.ErrNotExist) {
+			return nil
+		}
+		fmt.Println("logs command: failed to open logs file", err)
+		return common.ErrAdminLogsCmdCannotOpenLogsFile
 	}
 	defer logsFile.Close()
 
@@ -96,4 +80,19 @@ func printLogs(logsFileName string) error {
 		fmt.Println(string(line))
 	}
 	return nil
+}
+
+func parseAdminLogsPrintCmd(cmd *cobra.Command) (*AdminLogsPrintFlags, error) {
+	isClient := cmd.Flags().Lookup(common.ClientFlag).Changed
+	isServer := cmd.Flags().Lookup(common.ServerFlag).Changed
+
+	if isClient && isServer {
+		logger.Error("logs command: both flags provided, only one is expected")
+		return nil, common.ErrAdminLogsCmdBothFlagsProvided
+	}
+
+	return &AdminLogsPrintFlags{
+		IsClient: isClient,
+		IsServer: isServer,
+	}, nil
 }
