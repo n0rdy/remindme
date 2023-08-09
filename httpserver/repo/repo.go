@@ -6,14 +6,14 @@ import (
 )
 
 type ReminderRepo interface {
-	Add(reminder common.Reminder) error
+	Add(reminder common.Reminder) (int64, error)
 	Update(reminder common.Reminder) error
 	List() ([]common.Reminder, error)
-	Get(id int) (*common.Reminder, error)
+	Get(id int64) (*common.Reminder, error)
 	DeleteAll() error
-	Delete(id int) error
-	Exists(id int) (bool, error)
-	DeleteAllWithRemindAtBefore(threshold time.Time) ([]int, error)
+	Delete(id int64) error
+	Exists(id int64) (bool, error)
+	DeleteAllWithRemindAtBefore(threshold time.Time) ([]int64, error)
 	GetRemindersAfter(threshold time.Time) ([]common.Reminder, error)
 	Close() error
 }

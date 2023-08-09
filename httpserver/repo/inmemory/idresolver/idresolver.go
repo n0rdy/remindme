@@ -3,11 +3,11 @@ package idresolver
 import "sync"
 
 type IdResolver struct {
-	currentId int
+	currentId int64
 	mu        sync.Mutex
 }
 
-func (resolver *IdResolver) Next() int {
+func (resolver *IdResolver) Next() int64 {
 	resolver.mu.Lock()
 	defer resolver.mu.Unlock()
 

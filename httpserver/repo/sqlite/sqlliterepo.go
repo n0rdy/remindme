@@ -9,7 +9,7 @@ import (
 	"n0rdy.me/remindme/utils"
 	"time"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 )
 
 type sqliteReminderRepo struct {
@@ -17,7 +17,7 @@ type sqliteReminderRepo struct {
 }
 
 func NewSqliteReminderRepo() (repo.ReminderRepo, error) {
-	db, err := sql.Open("sqlite3", utils.GetOsSpecificLogsDir()+"remindme.db")
+	db, err := sql.Open("sqlite", utils.GetOsSpecificLogsDir()+"remindme.db")
 	if err != nil {
 		return nil, err
 	}
@@ -41,11 +41,15 @@ func NewSqliteReminderRepo() (repo.ReminderRepo, error) {
 	return &sqliteReminderRepo{db: db}, nil
 }
 
-func (repo *sqliteReminderRepo) Add(reminder common.Reminder) error {
-	_, err := repo.db.Exec(`
+func (repo *sqliteReminderRepo) Add(reminder common.Reminder) (int64, error) {
+	res, err := repo.db.Exec(`
 		INSERT INTO reminders (message, remind_at) VALUES (?, ?);
 	`, reminder.Message, reminder.RemindAt.Unix())
-	return err
+	if err != nil {
+		return 0, err
+	}
+
+	return res.LastInsertId()
 }
 
 func (repo *sqliteReminderRepo) Update(reminder common.Reminder) error {
@@ -67,7 +71,7 @@ func (repo *sqliteReminderRepo) List() ([]common.Reminder, error) {
 
 	reminders := make([]common.Reminder, 0)
 	for rows.Next() {
-		var id int
+		var id int64
 		var message string
 		var remindAt int64
 
@@ -84,12 +88,12 @@ func (repo *sqliteReminderRepo) List() ([]common.Reminder, error) {
 	return reminders, nil
 }
 
-func (repo *sqliteReminderRepo) Get(id int) (*common.Reminder, error) {
+func (repo *sqliteReminderRepo) Get(id int64) (*common.Reminder, error) {
 	row := repo.db.QueryRow(`
 		SELECT id, message, remind_at FROM reminders WHERE id = ?;
 	`, id)
 
-	var reminderId int
+	var reminderId int64
 	var reminderMessage string
 	var remindAtUnix int64
 
@@ -115,14 +119,14 @@ func (repo *sqliteReminderRepo) DeleteAll() error {
 	return err
 }
 
-func (repo *sqliteReminderRepo) Delete(id int) error {
+func (repo *sqliteReminderRepo) Delete(id int64) error {
 	_, err := repo.db.Exec(`
 		DELETE FROM reminders WHERE id = ?;
 	`, id)
 	return err
 }
 
-func (repo *sqliteReminderRepo) Exists(id int) (bool, error) {
+func (repo *sqliteReminderRepo) Exists(id int64) (bool, error) {
 	row := repo.db.QueryRow(`
 		SELECT id FROM reminders WHERE id = ?;
 	`, id)
@@ -139,7 +143,7 @@ func (repo *sqliteReminderRepo) Exists(id int) (bool, error) {
 	return true, nil
 }
 
-func (repo *sqliteReminderRepo) DeleteAllWithRemindAtBefore(threshold time.Time) ([]int, error) {
+func (repo *sqliteReminderRepo) DeleteAllWithRemindAtBefore(threshold time.Time) ([]int64, error) {
 	rows, err := repo.db.Query(`
 		SELECT id FROM reminders WHERE remind_at < ?;
 	`, threshold.Unix())
@@ -149,9 +153,9 @@ func (repo *sqliteReminderRepo) DeleteAllWithRemindAtBefore(threshold time.Time)
 	}
 	defer rows.Close()
 
-	ids := make([]int, 0)
+	ids := make([]int64, 0)
 	for rows.Next() {
-		var id int
+		var id int64
 		err := rows.Scan(&id)
 		if err != nil {
 			return nil, err
@@ -177,7 +181,7 @@ func (repo *sqliteReminderRepo) GetRemindersAfter(threshold time.Time) ([]common
 
 	reminders := make([]common.Reminder, 0)
 	for rows.Next() {
-		var id int
+		var id int64
 		var message string
 		var remindAt int64
 

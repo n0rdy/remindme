@@ -8,21 +8,21 @@ import (
 )
 
 type inMemoryReminderRepo struct {
-	reminders  map[int]common.Reminder
+	reminders  map[int64]common.Reminder
 	idResolver idresolver.IdResolver
 }
 
 func NewImMemoryReminderRepo() repo.ReminderRepo {
 	return &inMemoryReminderRepo{
-		reminders:  make(map[int]common.Reminder, 0),
+		reminders:  make(map[int64]common.Reminder, 0),
 		idResolver: idresolver.NewIdResolver(),
 	}
 }
 
-func (repo *inMemoryReminderRepo) Add(reminder common.Reminder) error {
+func (repo *inMemoryReminderRepo) Add(reminder common.Reminder) (int64, error) {
 	reminder.ID = repo.idResolver.Next()
 	repo.reminders[reminder.ID] = reminder
-	return nil
+	return reminder.ID, nil
 }
 
 func (repo *inMemoryReminderRepo) Update(reminder common.Reminder) error {
@@ -42,7 +42,7 @@ func (repo *inMemoryReminderRepo) List() ([]common.Reminder, error) {
 	return remindersAsList, nil
 }
 
-func (repo *inMemoryReminderRepo) Get(id int) (*common.Reminder, error) {
+func (repo *inMemoryReminderRepo) Get(id int64) (*common.Reminder, error) {
 	if reminder, found := repo.reminders[id]; found {
 		return &reminder, nil
 	} else {
@@ -51,22 +51,22 @@ func (repo *inMemoryReminderRepo) Get(id int) (*common.Reminder, error) {
 }
 
 func (repo *inMemoryReminderRepo) DeleteAll() error {
-	repo.reminders = make(map[int]common.Reminder, 0)
+	repo.reminders = make(map[int64]common.Reminder, 0)
 	return nil
 }
 
-func (repo *inMemoryReminderRepo) Delete(id int) error {
+func (repo *inMemoryReminderRepo) Delete(id int64) error {
 	delete(repo.reminders, id)
 	return nil
 }
 
-func (repo *inMemoryReminderRepo) Exists(id int) (bool, error) {
+func (repo *inMemoryReminderRepo) Exists(id int64) (bool, error) {
 	_, found := repo.reminders[id]
 	return found, nil
 }
 
-func (repo *inMemoryReminderRepo) DeleteAllWithRemindAtBefore(threshold time.Time) ([]int, error) {
-	deletedIds := make([]int, 0)
+func (repo *inMemoryReminderRepo) DeleteAllWithRemindAtBefore(threshold time.Time) ([]int64, error) {
+	deletedIds := make([]int64, 0)
 	for id, reminder := range repo.reminders {
 		if reminder.RemindAt.Before(threshold) {
 			delete(repo.reminders, id)

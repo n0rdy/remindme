@@ -109,7 +109,7 @@ func (rmr *RemindMeRouter) getReminder(w http.ResponseWriter, req *http.Request)
 		return
 	}
 	if reminder == nil {
-		logger.Error("getReminder request: reminder not found by ID " + strconv.Itoa(id))
+		logger.Error("getReminder request: reminder not found by ID " + strconv.FormatInt(id, 10))
 		rmr.sendErrorResponse(w, http.StatusNotFound, common.ErrCodeReminderNotFound)
 		return
 	}
@@ -136,7 +136,7 @@ func (rmr *RemindMeRouter) deleteReminder(w http.ResponseWriter, req *http.Reque
 	}
 
 	if !canceled {
-		logger.Error("deleteReminder request: reminder not found by ID " + strconv.Itoa(id))
+		logger.Error("deleteReminder request: reminder not found by ID " + strconv.FormatInt(id, 10))
 		rmr.sendErrorResponse(w, http.StatusNotFound, common.ErrCodeReminderNotFound)
 		return
 	}
@@ -206,13 +206,13 @@ func (rmr *RemindMeRouter) sendErrorResponse(w http.ResponseWriter, httpCode int
 	rmr.sendJsonResponse(w, httpCode, common.ErrorResponse{Code: errCode})
 }
 
-func (rmr *RemindMeRouter) getId(req *http.Request) (int, error) {
+func (rmr *RemindMeRouter) getId(req *http.Request) (int64, error) {
 	id := chi.URLParam(req, "id")
 	if id == "" {
 		return 0, errors.New(common.ErrCodeReminderIdWrongFormat)
 	}
 
-	idAsInt, err := strconv.Atoi(id)
+	idAsInt, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
 		return 0, errors.New(common.ErrCodeReminderIdWrongFormat)
 	}

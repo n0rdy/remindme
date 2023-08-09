@@ -5,7 +5,7 @@ import (
 )
 
 type Reminder struct {
-	ID       int
+	ID       int64
 	Message  string
 	RemindAt time.Time
 }
