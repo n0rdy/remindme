@@ -39,7 +39,7 @@ func Start() {
 
 	logger.Info("http: starting server at port " + port)
 
-	server := &http.Server{Addr: ":" + port, Handler: httpRouter}
+	server := &http.Server{Addr: "localhost:" + port, Handler: httpRouter}
 	go func() {
 		err := server.ListenAndServe()
 		if err != nil {
