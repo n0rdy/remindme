@@ -29,21 +29,43 @@ func GetOsSpecificLogsDir() string {
 	osType := DetectOsType()
 	switch osType {
 	case common.MacOS:
-		return "~/Library/Logs/remindme/"
+		homeDir := os.Getenv("HOME")
+		if homeDir != "" {
+			return homeDir + "/Library/Logs/remindme/"
+		}
+		return ""
 	case common.LinuxOS:
 		// from XDG Base Directory Specification: https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 		dataHome := os.Getenv("XDG_DATA_HOME")
 		if dataHome != "" {
-			if strings.HasSuffix(dataHome, "/") {
-				return dataHome + "remindme/"
-			} else {
-				return dataHome + "/remindme/"
-			}
+			return sanitize(dataHome) + "remindme/"
 		}
-		return "$HOME/.local/share/remindme/"
+
+		homeDir := os.Getenv("HOME")
+		if homeDir != "" {
+			return sanitize(homeDir) + "/.local/share/remindme/"
+		}
+		return ""
 	case common.WindowsOS:
-		return "%LocalAppData%" + string(os.PathSeparator) + "remindme" + string(os.PathSeparator)
+		localAppData := os.Getenv("LOCALAPPDATA")
+		if localAppData != "" {
+			return sanitize(localAppData) + "remindme" + string(os.PathSeparator)
+		}
+
+		appData := os.Getenv("APPDATA")
+		if appData != "" {
+			return sanitize(appData) + "remindme" + string(os.PathSeparator)
+		}
+		return ""
 	default:
 		return ""
+	}
+}
+
+func sanitize(path string) string {
+	if strings.HasSuffix(path, string(os.PathSeparator)) {
+		return path
+	} else {
+		return path + string(os.PathSeparator)
 	}
 }
