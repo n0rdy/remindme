@@ -43,7 +43,7 @@ func GetOsSpecificLogsDir() string {
 
 		homeDir := os.Getenv("HOME")
 		if homeDir != "" {
-			return sanitize(homeDir) + "/.local/share/remindme/"
+			return sanitize(homeDir) + ".local/share/remindme/"
 		}
 		return ""
 	case common.WindowsOS:
