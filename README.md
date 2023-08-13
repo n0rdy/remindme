@@ -89,6 +89,13 @@ remindme start
 ```
 Under the hood, the HTTP server is started on port 15555.
 
+It is possible to specify the port to start the server on by either:
+- using the `--port` flag, e.g.:
+```shell
+remindme start --port 15556
+```
+- setting the `REMINDME_PORT` environment variable to the desired port number.
+
 ### Adding a reminder
 There are several ways to add a reminder:
 

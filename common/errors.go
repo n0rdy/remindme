@@ -8,6 +8,7 @@ import (
 const (
 	errWrongFormattedStringFlagTemplate   = "wrong formatted flag [%s] - expected to be of type string"
 	errWrongFormattedIntFlagTemplate      = "wrong formatted flag [%s] - expected to be of type int32"
+	errWrongFormattedIntEnvVarTemplate    = "wrong formatted env var [%s] - expected to be of type int"
 	errCompletionUnsupportedShellTemplate = "can't set up completion: unsupported shell type [%s]"
 	errCompletionUnsupportedOsTemplate    = "can't set up completion: unsupported OS type [%s]"
 )
@@ -17,8 +18,11 @@ var (
 	ErrAdminLogsCmdBothFlagsProvided                  = errors.New("either --server or --client flag should be provided, not both")
 	ErrAdminLogsCmdCannotOpenLogsFile                 = errors.New("can't open logs file")
 	ErrAdminLogsCmdCannotDeleteLogsFile               = errors.New("can't delete logs file")
+	ErrAdminServerStartCmdCannotPersistConfigs        = errors.New("can't persist admin configs")
+	ErrAdminServerStartCmdCannotDeleteConfigs         = errors.New("can't delete previous admin configs")
+	ErrAdminServerStopCmdCannotStopServer             = errors.New("error on trying to stop the server as an admin")
 	ErrAtCmdTimeNotProvided                           = errors.New("time should be provided for `at` command: use either `--time` flag with corresponding text time in 24-hours HH:MM format (e.g. `16:30`, `07:45`, `00:00`), or --am/--pm flags with corresponding text time in A.M./P.M. 12-hours HH:MM format")
-	ErrAtCmdInvalidTimeflagsProvided                  = errors.New("time should be provided for `at` command: use either `--time`, --am or --pm flag, not both")
+	ErrAtCmdInvalidTimeFlagsProvided                  = errors.New("time should be provided for `at` command: use either `--time`, --am or --pm flag, not both")
 	ErrCancelCmdInvalidFlagsProvided                  = errors.New("either reminder ID or `--all` flag should be provided for `cancel` command: use `--id` flag with corresponding text ID or `--all` flag with no value")
 	ErrChangeCmdIdNotProvided                         = errors.New("reminder ID should be provided for `change` command: use `--id` flag with corresponding text ID")
 	ErrChangeCmdInvalidFlagsProvided                  = errors.New("neither `--about`, `--time` nor `--postpone` flags provided for `change` command")
@@ -37,6 +41,8 @@ var (
 	ErrListCmdSortingNotRequested                     = errors.New("--sort flag should be provided alongside the other sorting flags")
 	ErrStartCmdAlreadyRunning                         = errors.New("the application is already running, please, run the desired command")
 
+	ErrCmdCannotResolveServerPort       = errors.New("can't resolve server port")
+	ErrCmdInvalidPort                   = errors.New("port should be provided as an integer value in range [0, 65535]")
 	ErrCmdTimeShouldBeInFuture          = errors.New("provided time should be in future")
 	ErrCmdWrongFormatted24HoursTime     = errors.New("time should be provided in 24-hours HH:MM format: e.g. `16:30`, `07:45`, `00:00`")
 	ErrCmdWrongFormatted12HoursAmPmTime = errors.New("time should be provided in A.M./P.M. 12-hours HH:MM format: e.g. `07:45`")
@@ -68,6 +74,10 @@ func ErrWrongFormattedStringFlag(flagName string) error {
 
 func ErrWrongFormattedIntFlag(flagName string) error {
 	return errors.New(fmt.Sprintf(errWrongFormattedIntFlagTemplate, flagName))
+}
+
+func ErrWrongFormattedIntEnvVar(envVar string) error {
+	return errors.New(fmt.Sprintf(errWrongFormattedIntEnvVarTemplate, envVar))
 }
 
 func ErrCompletionCmdUnsupportedShell(shellType string) error {

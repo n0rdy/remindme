@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"n0rdy.me/remindme/common"
+	"n0rdy.me/remindme/config"
 	"n0rdy.me/remindme/httpclient"
 	"n0rdy.me/remindme/logger"
 	"n0rdy.me/remindme/utils"
@@ -42,13 +43,20 @@ List the upcoming reminders with the "list" command.`,
 			return err
 		}
 
-		reminder, err := httpclient.GetReminder(changeFlags.Id)
+		port, err := config.ResolveRunningServerPort()
+		if err != nil {
+			logger.Error("at command: error while resolving running server port", err)
+			return common.ErrCmdCannotResolveServerPort
+		}
+
+		httpClient := httpclient.NewHttpClient(port)
+		reminder, err := httpClient.GetReminder(changeFlags.Id)
 		if err != nil {
 			return err
 		}
 
 		if modifiedReminder, changed := changeReminder(*reminder, *changeFlags); changed {
-			return httpclient.ChangeReminder(changeFlags.Id, modifiedReminder)
+			return httpClient.ChangeReminder(changeFlags.Id, modifiedReminder)
 		} else {
 			// all the provided changes have the same value as the reminder has
 			return nil

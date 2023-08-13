@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"n0rdy.me/remindme/common"
+	"n0rdy.me/remindme/config"
 	"n0rdy.me/remindme/httpclient"
 	"n0rdy.me/remindme/logger"
 )
@@ -28,10 +29,18 @@ List the upcoming reminders with the "list" command.`,
 		if err != nil {
 			return err
 		}
+
+		port, err := config.ResolveRunningServerPort()
+		if err != nil {
+			logger.Error("at command: error while resolving running server port", err)
+			return common.ErrCmdCannotResolveServerPort
+		}
+
+		httpClient := httpclient.NewHttpClient(port)
 		if cancelFlags.Id != 0 {
-			return httpclient.DeleteReminder(cancelFlags.Id)
+			return httpClient.DeleteReminder(cancelFlags.Id)
 		} else {
-			return httpclient.DeleteAllReminders()
+			return httpClient.DeleteAllReminders()
 		}
 	},
 }

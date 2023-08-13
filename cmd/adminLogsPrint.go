@@ -52,7 +52,7 @@ func init() {
 }
 
 func printLogs(logsFileName string) error {
-	logsDir := utils.GetOsSpecificLogsDir()
+	logsDir := utils.GetOsSpecificAppDataDir()
 
 	logsFile, err := os.Open(logsDir + logsFileName)
 	if err != nil {

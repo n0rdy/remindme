@@ -10,6 +10,10 @@ type Reminder struct {
 	RemindAt time.Time
 }
 
+type AdminConfigs struct {
+	ServerPort int `yaml:"serverPort,omitempty"`
+}
+
 type Healthcheck struct {
 	Status string `json:"status,omitempty"`
 }
