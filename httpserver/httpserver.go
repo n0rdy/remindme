@@ -12,13 +12,12 @@ import (
 	"n0rdy.me/remindme/logger"
 	"n0rdy.me/remindme/utils"
 	"net/http"
+	"strconv"
 	"time"
 )
 
-func Start() {
-	port := "15555"
-
-	err := logger.SetupLogger(utils.GetOsSpecificLogsDir(), common.ServerLogsFileName)
+func Start(port int) {
+	err := logger.SetupLogger(utils.GetOsSpecificAppDataDir(), common.ServerLogsFileName)
 	if err != nil {
 		fmt.Println("setting up logger failed", err)
 	} else {
@@ -36,10 +35,11 @@ func Start() {
 	srv := service.NewReminderService(reminderRepo)
 	remindMeRouter := api.NewRemindMeRouter(&srv, shutdownCh)
 	httpRouter := remindMeRouter.NewRouter()
+	portAsString := strconv.Itoa(port)
 
-	logger.Info("http: starting server at port " + port)
+	logger.Info("http: starting server at port " + portAsString)
 
-	server := &http.Server{Addr: "localhost:" + port, Handler: httpRouter}
+	server := &http.Server{Addr: "localhost:" + portAsString, Handler: httpRouter}
 	go func() {
 		err := server.ListenAndServe()
 		if err != nil {

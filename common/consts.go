@@ -14,6 +14,7 @@ const (
 	MessageFlag    = "message"
 	MinutesFlag    = "min"
 	PmFlag         = "pm"
+	PortFlag       = "port"
 	PostponeFlag   = "postpone"
 	SecondsFlag    = "sec"
 	ServerFlag     = "server"
@@ -35,7 +36,10 @@ const (
 	ZshShell  = "zsh"
 	FishShell = "fish"
 
-	// logs:
-	ServerLogsFileName = "remindme_server_logs.log"
-	ClientLogsFileName = "remindme_client_logs.log"
+	// configs:
+	AdminConfigsFileName  = "remindme_admin_configs.yaml"
+	ClientLogsFileName    = "remindme_client_logs.log"
+	DefaultHttpServerPort = 15555
+	ServerPortEnvVar      = "REMINDME_SERVER_PORT"
+	ServerLogsFileName    = "remindme_server_logs.log"
 )

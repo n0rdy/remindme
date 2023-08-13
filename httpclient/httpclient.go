@@ -10,18 +10,26 @@ import (
 	"strconv"
 )
 
-const serverUrl = "http://localhost:15555"
+type RemindmeHttpClient struct {
+	httpClient http.Client
+	serverUrl  string
+}
 
-var httpClient = http.Client{}
+func NewHttpClient(port int) RemindmeHttpClient {
+	return RemindmeHttpClient{
+		httpClient: http.Client{},
+		serverUrl:  "http://localhost:" + strconv.Itoa(port),
+	}
+}
 
-func CreateReminder(reminder common.Reminder) error {
+func (rhc *RemindmeHttpClient) CreateReminder(reminder common.Reminder) error {
 	reqBody, err := json.Marshal(reminder)
 	if err != nil {
 		logger.Error("CreateReminder request: unexpected error happened on encoding request body", err)
 		return common.ErrHttpInternal
 	}
 
-	resp, err := httpClient.Post(serverUrl+"/api/v1/reminders", "application/json", bytes.NewReader(reqBody))
+	resp, err := rhc.httpClient.Post(rhc.serverUrl+"/api/v1/reminders", "application/json", bytes.NewReader(reqBody))
 	if err != nil {
 		logger.Error("CreateReminder request: unexpected error happened on POST HTTP call", err)
 		return common.ErrHttpOnCallingServer
@@ -33,8 +41,8 @@ func CreateReminder(reminder common.Reminder) error {
 	return nil
 }
 
-func GetAllReminders() ([]common.Reminder, error) {
-	resp, err := httpClient.Get(serverUrl + "/api/v1/reminders")
+func (rhc *RemindmeHttpClient) GetAllReminders() ([]common.Reminder, error) {
+	resp, err := rhc.httpClient.Get(rhc.serverUrl + "/api/v1/reminders")
 	if err != nil {
 		logger.Error("GetAllReminders request: unexpected error happened on GET HTTP call", err)
 		return nil, common.ErrHttpOnCallingServer
@@ -61,14 +69,14 @@ func GetAllReminders() ([]common.Reminder, error) {
 	return reminders, err
 }
 
-func DeleteAllReminders() error {
-	req, err := http.NewRequest(http.MethodDelete, serverUrl+"/api/v1/reminders", nil)
+func (rhc *RemindmeHttpClient) DeleteAllReminders() error {
+	req, err := http.NewRequest(http.MethodDelete, rhc.serverUrl+"/api/v1/reminders", nil)
 	if err != nil {
 		logger.Error("DeleteAllReminders request: unexpected error happened on preparing DELETE HTTP request", err)
 		return common.ErrHttpInternal
 	}
 
-	resp, err := httpClient.Do(req)
+	resp, err := rhc.httpClient.Do(req)
 	if err != nil {
 		logger.Error("DeleteAllReminders request: unexpected error happened on DELETE HTTP call", err)
 		return common.ErrHttpOnCallingServer
@@ -80,8 +88,8 @@ func DeleteAllReminders() error {
 	return nil
 }
 
-func GetReminder(id int) (*common.Reminder, error) {
-	resp, err := httpClient.Get(serverUrl + "/api/v1/reminders/" + strconv.Itoa(id))
+func (rhc *RemindmeHttpClient) GetReminder(id int) (*common.Reminder, error) {
+	resp, err := rhc.httpClient.Get(rhc.serverUrl + "/api/v1/reminders/" + strconv.Itoa(id))
 	if err != nil {
 		logger.Error("GetReminder request: unexpected error happened on GET HTTP call", err)
 		return nil, common.ErrHttpOnCallingServer
@@ -112,14 +120,14 @@ func GetReminder(id int) (*common.Reminder, error) {
 	return &reminder, err
 }
 
-func DeleteReminder(id int) error {
-	req, err := http.NewRequest(http.MethodDelete, serverUrl+"/api/v1/reminders/"+strconv.Itoa(id), nil)
+func (rhc *RemindmeHttpClient) DeleteReminder(id int) error {
+	req, err := http.NewRequest(http.MethodDelete, rhc.serverUrl+"/api/v1/reminders/"+strconv.Itoa(id), nil)
 	if err != nil {
 		logger.Error("DeleteReminder request: unexpected error happened on preparing DELETE HTTP request", err)
 		return common.ErrHttpInternal
 	}
 
-	resp, err := httpClient.Do(req)
+	resp, err := rhc.httpClient.Do(req)
 	if err != nil {
 		logger.Error("DeleteReminder request: unexpected error happened on DELETE HTTP call", err)
 		return common.ErrHttpOnCallingServer
@@ -135,20 +143,20 @@ func DeleteReminder(id int) error {
 	return nil
 }
 
-func ChangeReminder(id int, reminderModifications common.Reminder) error {
+func (rhc *RemindmeHttpClient) ChangeReminder(id int, reminderModifications common.Reminder) error {
 	reqBody, err := json.Marshal(reminderModifications)
 	if err != nil {
 		logger.Error("ChangeReminder request: unexpected error happened on encoding request body", err)
 		return common.ErrHttpInternal
 	}
 
-	req, err := http.NewRequest(http.MethodPut, serverUrl+"/api/v1/reminders/"+strconv.Itoa(id), bytes.NewReader(reqBody))
+	req, err := http.NewRequest(http.MethodPut, rhc.serverUrl+"/api/v1/reminders/"+strconv.Itoa(id), bytes.NewReader(reqBody))
 	if err != nil {
 		logger.Error("ChangeReminder request: unexpected error happened on preparing PUT HTTP request", err)
 		return common.ErrHttpInternal
 	}
 
-	resp, err := httpClient.Do(req)
+	resp, err := rhc.httpClient.Do(req)
 	if err != nil {
 		logger.Error("ChangeReminder request: unexpected error happened on PUT HTTP call", err)
 		return common.ErrHttpOnCallingServer
@@ -160,8 +168,8 @@ func ChangeReminder(id int, reminderModifications common.Reminder) error {
 	return nil
 }
 
-func Healthcheck() bool {
-	resp, err := httpClient.Get(serverUrl + "/healthcheck")
+func (rhc *RemindmeHttpClient) Healthcheck() bool {
+	resp, err := rhc.httpClient.Get(rhc.serverUrl + "/healthcheck")
 	if err != nil {
 		logger.Error("Healthcheck request: unexpected error happened on GET HTTP call", err)
 		return false
@@ -171,14 +179,14 @@ func Healthcheck() bool {
 	return resp.StatusCode == http.StatusOK
 }
 
-func StopServer() error {
-	req, err := http.NewRequest(http.MethodDelete, serverUrl+"/shutdown", nil)
+func (rhc *RemindmeHttpClient) StopServer() error {
+	req, err := http.NewRequest(http.MethodDelete, rhc.serverUrl+"/shutdown", nil)
 	if err != nil {
 		logger.Error("StopServer request: unexpected error happened on preparing DELETE HTTP request", err)
 		return common.ErrHttpInternal
 	}
 
-	resp, err := httpClient.Do(req)
+	resp, err := rhc.httpClient.Do(req)
 	if err != nil {
 		logger.Error("StopServer request: unexpected error happened on DELETE HTTP call", err)
 		return common.ErrHttpOnCallingServer

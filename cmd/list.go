@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"n0rdy.me/remindme/common"
+	"n0rdy.me/remindme/config"
 	"n0rdy.me/remindme/httpclient"
 	"n0rdy.me/remindme/logger"
 	"os"
@@ -38,7 +39,14 @@ Cancel reminder with the "cancel --id ${REMINDER_ID}" command`,
 			return err
 		}
 
-		reminders, err := httpclient.GetAllReminders()
+		port, err := config.ResolveRunningServerPort()
+		if err != nil {
+			logger.Error("at command: error while resolving running server port", err)
+			return common.ErrCmdCannotResolveServerPort
+		}
+
+		httpClient := httpclient.NewHttpClient(port)
+		reminders, err := httpClient.GetAllReminders()
 		if err != nil {
 			return err
 		}

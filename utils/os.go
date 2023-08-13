@@ -25,7 +25,7 @@ func DetectShellType() string {
 }
 
 // based on this answer: https://stackoverflow.com/a/68740581
-func GetOsSpecificLogsDir() string {
+func GetOsSpecificAppDataDir() string {
 	osType := DetectOsType()
 	switch osType {
 	case common.MacOS:

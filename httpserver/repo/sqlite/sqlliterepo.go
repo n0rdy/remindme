@@ -17,7 +17,7 @@ type sqliteReminderRepo struct {
 }
 
 func NewSqliteReminderRepo() (repo.ReminderRepo, error) {
-	db, err := sql.Open("sqlite", utils.GetOsSpecificLogsDir()+"remindme.db")
+	db, err := sql.Open("sqlite", utils.GetOsSpecificAppDataDir()+"remindme.db")
 	if err != nil {
 		return nil, err
 	}

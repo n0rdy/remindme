@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	err := logger.SetupLogger(utils.GetOsSpecificLogsDir(), common.ClientLogsFileName)
+	err := logger.SetupLogger(utils.GetOsSpecificAppDataDir(), common.ClientLogsFileName)
 	if err == nil {
 		defer logger.Close()
 	}

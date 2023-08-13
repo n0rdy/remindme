@@ -59,7 +59,7 @@ func init() {
 }
 
 func deleteLogs(logsFileName string) error {
-	logsFilePath := utils.GetOsSpecificLogsDir() + logsFileName
+	logsFilePath := utils.GetOsSpecificAppDataDir() + logsFileName
 
 	logsFile, err := os.Open(logsFilePath)
 	if err != nil {

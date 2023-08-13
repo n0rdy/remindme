@@ -1,25 +1,26 @@
 package cmd
 
 import (
-	"n0rdy.me/remindme/httpserver"
-	"n0rdy.me/remindme/logger"
-
 	"github.com/spf13/cobra"
+	"n0rdy.me/remindme/common"
 )
 
 // adminServerCmd represents the adminStartServer command
 var adminServerCmd = &cobra.Command{
 	Use:   "server",
-	Short: "To be run by the app to start the server: please, don't run it on your own, it might crash the app",
-	Long: `WARNING: To be run by the app to start the server: please, don't run it on your own, it might crash the app.
+	Short: "Admin server commands: start and stop server",
+	Long: `Admin server commands: start and stop server. 
+WARNING: these commands are for the admin use only: please, don't run them on your own, they might crash the app.
 
-Use "start" command instead if you need to start the remindme app.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		logger.Info("adminServerCmd command: called")
-		httpserver.Start()
-	},
+The list of available subcommands:
+- admin server start 	- to be run by the app to start the server
+- admin server stop 	- to be run by the admin to stop the server
+
+Accepts the --port flag to specify which port to start/stop the server at.`,
 }
 
 func init() {
 	adminCmd.AddCommand(adminServerCmd)
+
+	adminServerCmd.PersistentFlags().IntP("port", "p", common.DefaultHttpServerPort, "Port to start the HTTP server at")
 }

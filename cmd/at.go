@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"n0rdy.me/remindme/common"
+	"n0rdy.me/remindme/config"
 	"n0rdy.me/remindme/httpclient"
 	"n0rdy.me/remindme/logger"
 	"n0rdy.me/remindme/utils"
@@ -28,7 +29,15 @@ List the upcoming reminders with the "list" command.`,
 		if err != nil {
 			return err
 		}
-		return httpclient.CreateReminder(*reminder)
+
+		port, err := config.ResolveRunningServerPort()
+		if err != nil {
+			logger.Error("at command: error while resolving running server port", err)
+			return common.ErrCmdCannotResolveServerPort
+		}
+
+		httpClient := httpclient.NewHttpClient(port)
+		return httpClient.CreateReminder(*reminder)
 	},
 }
 
@@ -93,7 +102,7 @@ func calcRemindAtForAtFlag(flags *pflag.FlagSet) (time.Time, error) {
 	// more than 1 time-related flag is provided
 	if (t != "" && am != "") || (t != "" && pm != "") || (am != "" && pm != "") {
 		logger.Error("at command: more than 1 time flag provided")
-		return now, common.ErrAtCmdInvalidTimeflagsProvided
+		return now, common.ErrAtCmdInvalidTimeFlagsProvided
 	}
 
 	if t != "" {
