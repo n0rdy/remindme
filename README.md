@@ -25,7 +25,7 @@ Have fun! =)
 
 ## Installation
 ### Prerequisites
-- [Go](https://golang.org/doc/install) (version 1.21 or higher) if you want to build the app from the source code.
+- [Go](https://golang.org/doc/install) (version 1.22 or higher) if you want to build the app from the source code.
 
 ### Manual
 Download the latest release for your OS from [GitHub](https://github.com/n0rdy/remindme/releases).
