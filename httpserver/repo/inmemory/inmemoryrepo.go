@@ -1,9 +1,9 @@
 package inmemory
 
 import (
-	"n0rdy.me/remindme/common"
-	"n0rdy.me/remindme/httpserver/repo"
-	"n0rdy.me/remindme/httpserver/repo/inmemory/idresolver"
+	"n0rdy.foo/remindme/common"
+	"n0rdy.foo/remindme/httpserver/repo"
+	"n0rdy.foo/remindme/httpserver/repo/inmemory/idresolver"
 	"time"
 )
 

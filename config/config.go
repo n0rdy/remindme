@@ -3,9 +3,9 @@ package config
 import (
 	"errors"
 	"gopkg.in/yaml.v3"
-	"n0rdy.me/remindme/common"
-	"n0rdy.me/remindme/logger"
-	"n0rdy.me/remindme/utils"
+	"n0rdy.foo/remindme/common"
+	"n0rdy.foo/remindme/logger"
+	"n0rdy.foo/remindme/utils"
 	"os"
 	"strconv"
 )

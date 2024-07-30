@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"n0rdy.me/remindme/common"
-	"n0rdy.me/remindme/config"
-	"n0rdy.me/remindme/httpclient"
-	"n0rdy.me/remindme/logger"
+	"n0rdy.foo/remindme/common"
+	"n0rdy.foo/remindme/config"
+	"n0rdy.foo/remindme/httpclient"
+	"n0rdy.foo/remindme/logger"
 )
 
 // stopCmd represents the stop command

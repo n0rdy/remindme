@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"n0rdy.me/remindme/common"
+	"n0rdy.foo/remindme/common"
 )
 
 // adminServerCmd represents the adminStartServer command

@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"n0rdy.me/remindme/common"
+	"n0rdy.foo/remindme/common"
 	"os"
 	"runtime"
 	"strings"
