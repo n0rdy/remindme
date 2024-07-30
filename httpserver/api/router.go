@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/go-chi/chi/v5"
-	"n0rdy.me/remindme/common"
-	"n0rdy.me/remindme/httpserver/service"
-	"n0rdy.me/remindme/logger"
+	"n0rdy.foo/remindme/common"
+	"n0rdy.foo/remindme/httpserver/service"
+	"n0rdy.foo/remindme/logger"
 	"net/http"
 	"strconv"
 )

@@ -5,8 +5,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/cobra/doc"
 	"io"
-	"n0rdy.me/remindme/common"
-	"n0rdy.me/remindme/logger"
+	"n0rdy.foo/remindme/common"
+	"n0rdy.foo/remindme/logger"
 	"os"
 )
 

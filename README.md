@@ -38,8 +38,8 @@ brew install remindme
 ```
 
 ### Linux
-- via APT:
-#### Prerequisites
+#### via APT
+##### Prerequisites
 To enable, add the following file /etc/apt/sources.list.d/fury.list:
 ```text
 deb [trusted=yes] https://apt.fury.io/n0rdy/ /
@@ -60,13 +60,13 @@ echo "deb [trusted=yes] https://apt.fury.io/n0rdy/ /" > /etc/apt/sources.list.d/
 # click Ctrl+D to exit
 ```
 
-#### Installation
+##### Installation
 ```shell
 sudo apt update && sudo apt install remindme
 ```
 
-- via YUM:
-#### Prerequisites
+#### via YUM
+##### Prerequisites
 To enable, add the following file /etc/yum.repos.d/fury.repo:
 ```text
 [fury]
@@ -76,7 +76,7 @@ enabled=1
 gpgcheck=0
 ```
 
-#### Installation
+##### Installation
 ```shell
 sudo yum install remindme
 ```

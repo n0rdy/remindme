@@ -1,4 +1,4 @@
-module n0rdy.me/remindme
+module n0rdy.foo/remindme
 
 go 1.22
 

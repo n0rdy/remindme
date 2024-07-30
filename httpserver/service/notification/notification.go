@@ -2,7 +2,7 @@ package notification
 
 import (
 	"github.com/gen2brain/beeep"
-	"n0rdy.me/remindme/common"
+	"n0rdy.foo/remindme/common"
 )
 
 type Notifier struct {

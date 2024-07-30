@@ -3,10 +3,10 @@ package sqlite
 import (
 	"database/sql"
 	"errors"
-	"n0rdy.me/remindme/common"
-	"n0rdy.me/remindme/httpserver/repo"
-	"n0rdy.me/remindme/logger"
-	"n0rdy.me/remindme/utils"
+	"n0rdy.foo/remindme/common"
+	"n0rdy.foo/remindme/httpserver/repo"
+	"n0rdy.foo/remindme/logger"
+	"n0rdy.foo/remindme/utils"
 	"time"
 
 	_ "modernc.org/sqlite"

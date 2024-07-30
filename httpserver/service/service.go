@@ -1,10 +1,10 @@
 package service
 
 import (
-	"n0rdy.me/remindme/common"
-	"n0rdy.me/remindme/httpserver/repo"
-	"n0rdy.me/remindme/httpserver/service/notification"
-	"n0rdy.me/remindme/logger"
+	"n0rdy.foo/remindme/common"
+	"n0rdy.foo/remindme/httpserver/repo"
+	"n0rdy.foo/remindme/httpserver/service/notification"
+	"n0rdy.foo/remindme/logger"
 	"strconv"
 	"time"
 )
